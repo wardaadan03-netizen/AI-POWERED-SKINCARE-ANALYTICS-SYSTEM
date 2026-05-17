@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}Inzaghi's Bliss — AI Skincare Platform{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-container">
+        <div class="hero-badge">AI-Powered Skincare Intelligence</div>
+        <h1 class="hero-title">
+            Discover Your<br>
+            <span class="gradient-text">Perfect Skincare Routine</span>
+        </h1>
+        <p class="hero-description">
+            Inzaghi's Bliss combines advanced artificial intelligence with dermatological science 
+            to deliver personalized skincare recommendations tailored uniquely to your needs.
+        </p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('register') }}" class="btn-primary">
+                <i class="fas fa-user-plus"></i> Get Started
+            </a>
+            <a href="{{ url_for('login') }}" class="btn-secondary">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="section-container">
+        <h2 class="section-title">Why Choose Inzaghi's Bliss</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                <h3>AI-Powered Analysis</h3>
+                <p>Advanced machine learning algorithms analyze your skin profile for optimal product matching.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                <h3>Interactive Insights</h3>
+                <p>Beautiful 3D visualizations help you understand your skincare journey.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-flask"></i></div>
+                <h3>Ingredient Science</h3>
+                <p>Deep analysis of active ingredients and their proven effectiveness.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-simple"></i></div>
+                <h3>Progress Tracking</h3>
+                <p>Monitor your skin health improvements over time with detailed analytics.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section">
+    <div class="section-container">
+        <div class="stats-grid">
+            <div class="stat-item"><div class="stat-number">100K+</div><div class="stat-text">Active Users</div></div>
+            <div class="stat-item"><div class="stat-number">95%</div><div class="stat-text">Match Accuracy</div></div>
+            <div class="stat-item"><div class="stat-number">500+</div><div class="stat-text">Products Analyzed</div></div>
+            <div class="stat-item"><div class="stat-number">4.9</div><div class="stat-text">User Rating</div></div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background: linear-gradient(135deg, rgba(108,99,255,0.15) 0%, rgba(255,101,132,0.15) 100%);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 50px;
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #6C63FF 0%, #FF6584 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-description {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.features-section {
+    padding: 4rem 2rem;
+    background: rgba(0,0,0,0.2);
+}
+
+.section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 3rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(108,99,255,0.3);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(108,99,255,0.2) 0%, rgba(255,101,132,0.2) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+}
+
+.feature-card h3 {
+    margin-bottom: 0.8rem;
+}
+
+.feature-card p {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.9rem;
+}
+
+.stats-section {
+    padding: 4rem 2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 2rem;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6C63FF 0%, #FF6584 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.stat-text {
+    color: rgba(255,255,255,0.6);
+    margin-top: 0.3rem;
+}
+
+@media (max-width: 768px) {
+    .hero-title { font-size: 2rem; }
+    .hero-description { font-size: 1rem; }
+    .section-title { font-size: 1.5rem; }
+    .features-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+{% endblock %}

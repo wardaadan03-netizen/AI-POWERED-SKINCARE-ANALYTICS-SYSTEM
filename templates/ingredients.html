@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Ingredient Science — Inzaghi's Bliss{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ingredients-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .ingredient-hero {
+        text-align: center;
+        margin-bottom: 3rem;
+        animation: fadeInUp 0.6s ease;
+    }
+    
+    .ingredient-hero h1 {
+        font-size: 2rem;
+        background: linear-gradient(135deg, #FFFFFF, #6C63FF);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    
+    .ingredient-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .ingredient-detail-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 24px;
+        padding: 1.5rem;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    
+    .ingredient-detail-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(108,99,255,0.4);
+    }
+    
+    .ingredient-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .ingredient-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #6C63FF, #FF6584);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    .ingredient-rating {
+        color: #FFB347;
+    }
+    
+    .benefits-list {
+        list-style: none;
+        margin: 1rem 0;
+    }
+    
+    .benefits-list li {
+        padding: 0.3rem 0;
+        padding-left: 1.2rem;
+        position: relative;
+        color: rgba(255,255,255,0.7);
+        font-size: 0.85rem;
+    }
+    
+    .benefits-list li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #00D68F;
+    }
+    
+    .science-note {
+        background: rgba(108,99,255,0.1);
+        border-radius: 12px;
+        padding: 0.8rem;
+        margin-top: 1rem;
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.6);
+        border-left: 3px solid #6C63FF;
+    }
+    
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ingredients-container">
+    <div class="ingredient-hero">
+        <h1>Ingredient Science</h1>
+        <p>Understanding what makes your skincare work</p>
+    </div>
+    
+    <div class="ingredient-grid" id="ingredientsGrid">
+        <div class="loading-spinner" style="text-align: center; grid-column: 1/-1; padding: 3rem;">
+            <div class="spinner"></div>
+            <p>Loading ingredient insights...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    loadIngredients();
+});
+
+function loadIngredients() {
+    $.ajax({
+        url: '/api/ingredients',
+        method: 'GET',
+        success: function(data) {
+            if (data.success && data.ingredients) {
+                displayIngredients(data.ingredients);
+            }
+        }
+    });
+}
+
+function displayIngredients(ingredients) {
+    const grid = $('#ingredientsGrid');
+    grid.empty();
+    
+    Object.entries(ingredients).forEach(([name, info]) => {
+        const stars = '★'.repeat(Math.floor(info.rating)) + '☆'.repeat(5 - Math.floor(info.rating));
+        grid.append(`
+            <div class="ingredient-detail-card" onclick="showIngredientDetails('${name}')">
+                <div class="ingredient-header">
+                    <span class="ingredient-name">${name}</span>
+                    <span class="ingredient-rating">${stars}</span>
+                </div>
+                <ul class="benefits-list">
+                    ${info.benefits.map(b => `<li>${b}</li>`).join('')}
+                </ul>
+                <div class="science-note">
+                    <strong>Best for:</strong> ${info.best_for.join(', ')}
+                </div>
+            </div>
+        `);
+    });
+}
+
+function showIngredientDetails(name) {
+    $.ajax({
+        url: '/api/ingredients',
+        method: 'GET',
+        success: function(data) {
+            const ing = data.ingredients[name];
+            if (ing) {
+                const stars = '★'.repeat(Math.floor(ing.rating)) + '☆'.repeat(5 - Math.floor(ing.rating));
+                showModal(`
+                    <h3 style="margin-bottom: 0.5rem;">${name}</h3>
+                    <div style="margin-bottom: 1rem;">${stars}</div>
+                    <p><strong>Key Benefits:</strong></p>
+                    <ul style="margin-bottom: 1rem; padding-left: 1.2rem;">
+                        ${ing.benefits.map(b => `<li>${b}</li>`).join('')}
+                    </ul>
+                    <p><strong>Best suited for:</strong> ${ing.best_for.join(', ')}</p>
+                    <p style="margin-top: 1rem; padding: 0.8rem; background: rgba(108,99,255,0.1); border-radius: 12px;">
+                        <strong>The Science:</strong> ${ing.science}
+                    </p>
+                `, `Ingredient Deep Dive: ${name}`);
+            }
+        }
+    });
+}
+</script>
+{% endblock %}

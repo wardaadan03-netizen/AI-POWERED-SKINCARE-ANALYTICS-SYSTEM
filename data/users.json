@@ -1,0 +1,224 @@
+{
+  "inzaghia@gmail.com": {
+    "user_id": "USER_457ECF8D",
+    "email": "inzaghia@gmail.com",
+    "password_hash": "e477dd3849f9e1f154d273d222fc8c12:25b1b82fb4c7d771c05117c3fcb0c6f5843c99749aec9762cbaacacbe7788d1d",
+    "created_at": "2026-05-17T17:24:12.489027",
+    "last_login": null,
+    "user_data": {
+      "name": ""
+    },
+    "preferences": {
+      "skin_type": "Oily",
+      "skin_concerns": [],
+      "age": 20,
+      "gender": "Female",
+      "monthly_budget": 20.0,
+      "uses_retinol": false,
+      "uses_vitamin_c": false,
+      "uses_niacinamide": false,
+      "allergies": []
+    },
+    "history": [
+      {
+        "timestamp": "2026-05-17T17:24:54.638906",
+        "action": "profile_setup",
+        "data": {
+          "skin_type": "Oily",
+          "skin_concerns": [],
+          "age": 20,
+          "gender": "Female",
+          "monthly_budget": 20.0,
+          "uses_retinol": false,
+          "uses_vitamin_c": false,
+          "uses_niacinamide": false,
+          "allergies": []
+        }
+      },
+      {
+        "timestamp": "2026-05-17T17:25:00.204529",
+        "action": "get_recommendations",
+        "data": {
+          "skin_type": "Oily",
+          "skin_concerns": [],
+          "age": 20,
+          "gender": "Female",
+          "monthly_budget": 20.0,
+          "uses_retinol": false,
+          "uses_vitamin_c": false,
+          "uses_niacinamide": false,
+          "allergies": []
+        }
+      },
+      {
+        "timestamp": "2026-05-17T17:25:40.042950",
+        "action": "get_recommendations",
+        "data": {
+          "skin_type": "Oily",
+          "skin_concerns": [],
+          "age": 20,
+          "gender": "Female",
+          "monthly_budget": 20.0,
+          "uses_retinol": false,
+          "uses_vitamin_c": false,
+          "uses_niacinamide": false,
+          "allergies": []
+        }
+      },
+      {
+        "timestamp": "2026-05-17T17:25:49.726897",
+        "action": "get_recommendations",
+        "data": {
+          "skin_type": "Oily",
+          "skin_concerns": [],
+          "age": 20,
+          "gender": "Female",
+          "monthly_budget": 20.0,
+          "uses_retinol": false,
+          "uses_vitamin_c": false,
+          "uses_niacinamide": false,
+          "allergies": []
+        }
+      },
+      {
+        "timestamp": "2026-05-17T17:25:52.666052",
+        "action": "get_recommendations",
+        "data": {
+          "skin_type": "Oily",
+          "skin_concerns": [],
+          "age": 20,
+          "gender": "Female",
+          "monthly_budget": 20.0,
+          "uses_retinol": false,
+          "uses_vitamin_c": false,
+          "uses_niacinamide": false,
+          "allergies": []
+        }
+      },
+      {
+        "timestamp": "2026-05-17T17:25:56.253199",
+        "action": "get_recommendations",
+        "data": {
+          "skin_type": "Oily",
+          "skin_concerns": [],
+          "age": 20,
+          "gender": "Female",
+          "monthly_budget": 20.0,
+          "uses_retinol": false,
+          "uses_vitamin_c": false,
+          "uses_niacinamide": false,
+          "allergies": []
+        }
+      },
+      {
+        "timestamp": "2026-05-17T17:26:43.112207",
+        "action": "get_recommendations",
+        "data": {
+          "skin_type": "Oily",
+          "skin_concerns": [],
+          "age": 20,
+          "gender": "Female",
+          "monthly_budget": 20.0,
+          "uses_retinol": false,
+          "uses_vitamin_c": false,
+          "uses_niacinamide": false,
+          "allergies": []
+        }
+      },
+      {
+        "timestamp": "2026-05-17T17:26:44.181530",
+        "action": "get_recommendations",
+        "data": {
+          "skin_type": "Oily",
+          "skin_concerns": [],
+          "age": 20,
+          "gender": "Female",
+          "monthly_budget": 20.0,
+          "uses_retinol": false,
+          "uses_vitamin_c": false,
+          "uses_niacinamide": false,
+          "allergies": []
+        }
+      },
+      {
+        "timestamp": "2026-05-17T17:26:45.350823",
+        "action": "get_recommendations",
+        "data": {
+          "skin_type": "Oily",
+          "skin_concerns": [],
+          "age": 20,
+          "gender": "Female",
+          "monthly_budget": 20.0,
+          "uses_retinol": false,
+          "uses_vitamin_c": false,
+          "uses_niacinamide": false,
+          "allergies": []
+        }
+      }
+    ]
+  },
+  "wardaadan03@gmail.com": {
+    "user_id": "USER_21C05A57",
+    "email": "wardaadan03@gmail.com",
+    "password_hash": "1648a6b70a899366b3a2a2b998ee802e:b8a0c1ad9929c963d988fb9d41305574a2ec7174a13be0501c8f18d532e5682c",
+    "created_at": "2026-05-17T17:51:33.195462",
+    "last_login": null,
+    "user_data": {
+      "name": ""
+    },
+    "preferences": {},
+    "history": []
+  },
+  "abc@gmail.com": {
+    "user_id": "USER_B93F7595",
+    "email": "abc@gmail.com",
+    "password_hash": "73ef3c9c4f0fe12f0ade29d547f41bf9:2cf7c71e16b397ccedc774b62b452c1d9a45642fa0e227d0807bbabcccd66af4",
+    "created_at": "2026-05-17T18:08:37.768163",
+    "last_login": null,
+    "user_data": {},
+    "preferences": {},
+    "history": []
+  },
+  "wawa@gmail.com": {
+    "user_id": "USER_C540F2AF",
+    "email": "wawa@gmail.com",
+    "password_hash": "07fbe91616db85d7572726265ddc5d53:2e90b38e58cc84abd1aad82156fc9156e503540331b01c85ae8e1c1a540b7efd",
+    "created_at": "2026-05-17T18:50:04.850284",
+    "last_login": "2026-05-17T18:56:12.202356",
+    "user_data": {},
+    "preferences": {},
+    "history": []
+  },
+  "wawaa@gmail.com": {
+    "user_id": "USER_6850535F",
+    "email": "wawaa@gmail.com",
+    "password_hash": "51c2773fc3fb0bd828a5d217329a2bfc:f7a538eefeb6f2c46b18f87f436618513241dd03165c496e2b762fd5fb136718",
+    "created_at": "2026-05-17T19:04:31.301404",
+    "last_login": null,
+    "user_data": {},
+    "preferences": {
+      "skin_type": "Sensitive",
+      "skin_concerns": [],
+      "age": 20,
+      "gender": "Female",
+      "monthly_budget": 50.0
+    },
+    "history": []
+  },
+  "wardaada@gmail.com": {
+    "user_id": "USER_6872A5DE",
+    "email": "wardaada@gmail.com",
+    "password_hash": "04555ab31efd326e6316ca1edec36215:8251818b0e5ffdd13d4efbd465f622e55a6a665b194e65898e5f865e839dc769",
+    "created_at": "2026-05-17T19:28:18.194528",
+    "last_login": null,
+    "user_data": {},
+    "preferences": {
+      "skin_type": "Oily",
+      "skin_concerns": [],
+      "age": 18,
+      "gender": "Female",
+      "monthly_budget": 50.0
+    },
+    "history": []
+  }
+}

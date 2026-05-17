@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Sign In — Inzaghi's Bliss</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0F0719 0%, #1A0F2E 50%, #0F0719 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(108,99,255,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(255,101,132,0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.25;
+            pointer-events: none;
+        }
+        
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(108,99,255,0.3) 0%, transparent 70%);
+            top: -200px;
+            left: -200px;
+            animation: floatOrb 25s infinite ease-in-out;
+        }
+        
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,101,132,0.2) 0%, transparent 70%);
+            bottom: -250px;
+            right: -200px;
+            animation: floatOrb 30s infinite ease-in-out reverse;
+        }
+        
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -40px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .login-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 28px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6C63FF, #FF6584, #00D2FF, #6C63FF);
+            background-size: 200% 100%;
+            animation: gradientFlow 3s ease infinite;
+        }
+        
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, rgba(108,99,255,0.06) 0%, rgba(255,101,132,0.06) 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #6C63FF 0%, #FF6584 100%);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 0 20px rgba(108,99,255,0.3);
+        }
+        
+        .login-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FFFFFF 0%, #6C63FF 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-header p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+        }
+        
+        .login-form {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            color: #6C63FF;
+            z-index: 1;
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.9rem 1rem 0.9rem 3rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            font-size: 0.9rem;
+            color: white;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #6C63FF;
+            background: rgba(255,255,255,0.06);
+        }
+        
+        .form-input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        
+        .btn-signin {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #6C63FF 0%, #FF6584 100%);
+            border: none;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+        
+        .btn-signin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108,99,255,0.4);
+        }
+        
+        .btn-signin:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            background: rgba(255,59,92,0.1);
+            border: 1px solid rgba(255,59,92,0.3);
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        
+        .error-message i {
+            color: #FF3B5C;
+        }
+        
+        .error-message span {
+            color: #FF6584;
+            font-size: 0.85rem;
+            flex: 1;
+        }
+        
+        .demo-box {
+            background: rgba(108,99,255,0.08);
+            border: 1px solid rgba(108,99,255,0.2);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .demo-box p {
+            margin: 0.3rem 0;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+        }
+        
+        .demo-box strong {
+            color: #6C63FF;
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .signup-link a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+        
+        .signup-link a:hover {
+            color: #6C63FF;
+        }
+        
+        .spinner-btn {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .login-header { padding: 1.5rem; }
+            .login-form { padding: 1.5rem; }
+            .login-header h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-icon">B</div>
+                <h1>Welcome Back</h1>
+                <p>Sign in to continue your skincare journey</p>
+            </div>
+            
+            <div class="login-form">
+                <div class="error-message" id="errorMsg">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorText"></span>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="email" name="email" class="form-input" 
+                                   placeholder="your@email.com" required autocomplete="off">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" name="password" class="form-input" 
+                                   placeholder="Enter your password" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-signin" id="signinBtn">
+                        <span id="btnText">Sign In</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+                
+                <div class="demo-box">
+                    <p><strong>Demo Account</strong></p>
+                    <p>Email: <strong>demo@inzaghis-bliss.com</strong></p>
+                    <p>Password: <strong>demo123</strong></p>
+                    <p style="font-size: 0.7rem; margin-top: 0.5rem;">Create your own account for personalized recommendations</p>
+                </div>
+                
+                <div class="signup-link">
+                    <a href="{{ url_for('register') }}">Don't have an account? Create one →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        $('#loginForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = $('#signinBtn');
+            const btnText = $('#btnText');
+            const errorDiv = $('#errorMsg');
+            const errorText = $('#errorText');
+            
+            btn.prop('disabled', true);
+            btnText.html('<span class="spinner-btn"></span> Signing in...');
+            errorDiv.hide();
+            
+            $.ajax({
+                url: '/login',
+                method: 'POST',
+                data: {
+                    email: $('#email').val(),
+                    password: $('#password').val()
+                },
+                success: function(data) {
+                    if (data.success) {
+                        btnText.html('<i class="fas fa-check"></i> Welcome!');
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 800);
+                    }
+                },
+                error: function(xhr) {
+                    const response = xhr.responseJSON;
+                    errorText.text(response?.error || 'Invalid email or password. Please try again.');
+                    errorDiv.show();
+                    btn.prop('disabled', false);
+                    btnText.html('Sign In');
+                    
+                    setTimeout(() => {
+                        errorDiv.fadeOut(500);
+                    }, 4000);
+                }
+            });
+        });
+        
+        // Auto-fill demo credentials on focus
+        $('#email').on('focus', function() {
+            if (!$(this).val()) {
+                $(this).val('demo@inzaghis-bliss.com');
+                $('#password').val('demo123');
+            }
+        });
+        
+        // Clear auto-fill if user starts typing
+        $('#email').on('input', function() {
+            if ($(this).val() === 'demo@inzaghis-bliss.com') {
+                $(this).val('');
+                $('#password').val('');
+            }
+        });
+    </script>
+</body>
+</html>

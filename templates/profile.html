@@ -1,0 +1,713 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile — Inzaghi's Bliss{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .profile-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.6s ease;
+    }
+    
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .profile-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #FFFFFF 0%, #6C63FF 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-header p {
+        color: rgba(255,255,255,0.5);
+    }
+    
+    /* Profile Grid */
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    /* Cards */
+    .profile-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 24px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .profile-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(108,99,255,0.3);
+    }
+    
+    .card-header {
+        padding: 1rem 1.5rem;
+        background: linear-gradient(135deg, rgba(108,99,255,0.08) 0%, rgba(255,101,132,0.08) 100%);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .card-header h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+    
+    .card-header h3 i {
+        color: #6C63FF;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    /* Avatar */
+    .profile-avatar {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .avatar-initials {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #6C63FF 0%, #FF6584 100%);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 700;
+        color: white;
+        box-shadow: 0 0 20px rgba(108,99,255,0.3);
+    }
+    
+    /* Info Rows */
+    .info-row {
+        padding: 0.7rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .info-label {
+        width: 110px;
+        font-weight: 500;
+        color: rgba(255,255,255,0.6);
+        font-size: 0.85rem;
+    }
+    
+    .info-value {
+        flex: 1;
+        color: rgba(255,255,255,0.9);
+        font-size: 0.85rem;
+    }
+    
+    /* Form Elements */
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-weight: 500;
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.7);
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        color: white;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #6C63FF;
+        background: rgba(255,255,255,0.08);
+    }
+    
+    select.form-control {
+        cursor: pointer;
+    }
+    
+    /* Checkbox Grid */
+    .checkbox-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.8rem;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .checkbox-item:hover {
+        background: rgba(108,99,255,0.08);
+        border-color: rgba(108,99,255,0.3);
+    }
+    
+    .checkbox-item input {
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+        accent-color: #6C63FF;
+    }
+    
+    .checkbox-item label {
+        margin: 0;
+        cursor: pointer;
+        flex: 1;
+        color: rgba(255,255,255,0.7);
+        font-size: 0.8rem;
+    }
+    
+    /* Buttons */
+    .btn-secondary {
+        width: 100%;
+        padding: 0.7rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 50px;
+        color: rgba(255,255,255,0.8);
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-secondary:hover {
+        background: rgba(108,99,255,0.15);
+        border-color: #6C63FF;
+        transform: translateY(-2px);
+    }
+    
+    .btn-primary {
+        width: 100%;
+        padding: 0.8rem;
+        background: linear-gradient(135deg, #6C63FF 0%, #FF6584 100%);
+        border: none;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108,99,255,0.4);
+    }
+    
+    /* Stats Grid */
+    .stats-mini-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .stat-mini-item {
+        padding: 1rem;
+        background: rgba(108,99,255,0.06);
+        border-radius: 14px;
+    }
+    
+    .stat-mini-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #6C63FF 0%, #FF6584 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    .stat-mini-label {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.5);
+        margin-top: 0.3rem;
+    }
+    
+    /* Danger Zone */
+    .danger-zone {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: rgba(255,59,92,0.05);
+        border: 1px solid rgba(255,59,92,0.2);
+        border-radius: 20px;
+    }
+    
+    .danger-zone h3 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: #FF6584;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .danger-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-danger {
+        padding: 0.6rem 1.2rem;
+        background: rgba(255,59,92,0.15);
+        border: 1px solid rgba(255,59,92,0.3);
+        border-radius: 50px;
+        color: #FF6584;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .btn-danger:hover {
+        background: rgba(255,59,92,0.25);
+        transform: translateY(-2px);
+    }
+    
+    /* Activity Feed */
+    .activity-feed {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    .activity-item {
+        padding: 0.8rem;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .activity-action {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.85rem;
+    }
+    
+    .activity-date {
+        color: rgba(255,255,255,0.4);
+        font-size: 0.7rem;
+    }
+    
+    .loading-spinner {
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 2px solid rgba(108,99,255,0.2);
+        border-top-color: #6C63FF;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 0.8rem;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+        .profile-container { padding: 1rem; }
+        .profile-grid { grid-template-columns: 1fr; }
+        .danger-actions { flex-direction: column; }
+        .info-row { flex-direction: column; gap: 0.3rem; }
+        .info-label { width: 100%; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <h1>My Profile</h1>
+        <p>Manage your account and skincare preferences</p>
+    </div>
+    
+    <div class="profile-grid">
+        <!-- Account Information -->
+        <div class="profile-card">
+            <div class="card-header">
+                <h3><i class="fas fa-id-card"></i> Account Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="profile-avatar">
+                    <div class="avatar-initials">{{ session.get('user_email', 'U')[0].upper() }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value" id="userEmail">{{ session.get('user_email', 'Not set') }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Member Since:</span>
+                    <span class="info-value" id="memberSince">Loading...</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Last Login:</span>
+                    <span class="info-value" id="lastLogin">Loading...</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">User ID:</span>
+                    <span class="info-value" id="userId">Loading...</span>
+                </div>
+                
+                <button class="btn-secondary" id="editProfileBtn">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </button>
+            </div>
+        </div>
+        
+        <!-- Skincare Preferences -->
+        <div class="profile-card">
+            <div class="card-header">
+                <h3><i class="fas fa-spa"></i> Skincare Preferences</h3>
+            </div>
+            <div class="card-body">
+                <form id="preferencesForm" style="display: none;">
+                    <div class="form-group">
+                        <label>Skin Type</label>
+                        <select name="skin_type" id="skinType" class="form-control">
+                            <option value="">Select skin type...</option>
+                            <option value="Oily">Oily</option>
+                            <option value="Dry">Dry</option>
+                            <option value="Combination">Combination</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Sensitive">Sensitive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Skin Concerns</label>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="skin_concerns" value="Acne"> Acne
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="skin_concerns" value="Wrinkles"> Wrinkles
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="skin_concerns" value="Pigmentation"> Pigmentation
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="skin_concerns" value="Dryness"> Dryness
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="skin_concerns" value="Redness"> Redness
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="skin_concerns" value="Large Pores"> Large Pores
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Monthly Budget (USD)</label>
+                        <input type="number" name="monthly_budget" id="monthlyBudget" class="form-control" placeholder="e.g., 50" step="10">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" name="age" id="age" class="form-control" placeholder="e.g., 28" min="18" max="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select name="gender" id="gender" class="form-control">
+                            <option value="">Select gender...</option>
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Non-binary">Non-binary</option>
+                            <option value="Prefer not say">Prefer not to say</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Active Ingredients You Use</label>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="uses_retinol"> Retinol
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="uses_vitamin_c"> Vitamin C
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="uses_niacinamide"> Niacinamide
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="uses_hyaluronic"> Hyaluronic Acid
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Save Preferences
+                    </button>
+                </form>
+                
+                <div id="preferencesDisplay">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>Loading preferences...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="profile-card">
+            <div class="card-header">
+                <h3><i class="fas fa-history"></i> Recent Activity</h3>
+            </div>
+            <div class="card-body">
+                <div id="activityHistory" class="activity-feed">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>Loading activity...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="profile-card">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-line"></i> Your Statistics</h3>
+            </div>
+            <div class="card-body">
+                <div class="stats-mini-grid">
+                    <div class="stat-mini-item">
+                        <div class="stat-mini-value" id="totalRecs">0</div>
+                        <div class="stat-mini-label">Recommendations</div>
+                    </div>
+                    <div class="stat-mini-item">
+                        <div class="stat-mini-value" id="profileComplete">0%</div>
+                        <div class="stat-mini-label">Profile Complete</div>
+                    </div>
+                    <div class="stat-mini-item">
+                        <div class="stat-mini-value" id="loginCount">0</div>
+                        <div class="stat-mini-label">Total Logins</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Danger Zone -->
+    <div class="danger-zone">
+        <h3><i class="fas fa-exclamation-triangle"></i> Account Management</h3>
+        <div class="danger-actions">
+            <button class="btn-danger" id="deleteAccountBtn">
+                <i class="fas fa-trash-alt"></i> Delete Account
+            </button>
+            <button class="btn-danger" id="changePasswordBtn">
+                <i class="fas fa-key"></i> Change Password
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    loadProfileData();
+    loadActivityHistory();
+    
+    $('#preferencesForm').on('submit', function(e) {
+        e.preventDefault();
+        savePreferences();
+    });
+    
+    $('#editProfileBtn').on('click', function() {
+        $('#preferencesForm').slideToggle();
+        $('#preferencesDisplay').slideToggle();
+    });
+    
+    $('#deleteAccountBtn').on('click', function() {
+        if (confirm('Are you sure you want to delete your account? This action cannot be undone!')) {
+            deleteAccount();
+        }
+    });
+});
+
+function loadProfileData() {
+    $.ajax({
+        url: '/api/user/profile',
+        method: 'GET',
+        success: function(data) {
+            if (data.success) {
+                $('#memberSince').text(formatDate(data.user.member_since));
+                $('#lastLogin').text(formatDate(data.user.last_login) || 'Never');
+                $('#userId').text(data.user.user_id);
+                $('#totalRecs').text(data.user.total_recommendations || 0);
+                $('#loginCount').text(data.user.login_count || 1);
+                
+                // Display preferences
+                if (data.user.preferences) {
+                    let html = '';
+                    html += `<div class="info-row"><span class="info-label">Skin Type:</span><span class="info-value">${data.user.preferences.skin_type || 'Not set'}</span></div>`;
+                    
+                    const concerns = data.user.preferences.skin_concerns || [];
+                    html += `<div class="info-row"><span class="info-label">Concerns:</span><span class="info-value">${concerns.join(', ') || 'Not set'}</span></div>`;
+                    
+                    html += `<div class="info-row"><span class="info-label">Budget:</span><span class="info-value">$${data.user.preferences.monthly_budget || 'Not set'}</span></div>`;
+                    html += `<div class="info-row"><span class="info-label">Age:</span><span class="info-value">${data.user.preferences.age || 'Not set'}</span></div>`;
+                    html += `<div class="info-row"><span class="info-label">Gender:</span><span class="info-value">${data.user.preferences.gender || 'Not set'}</span></div>`;
+                    
+                    $('#preferencesDisplay').html(html);
+                    
+                    // Load form values
+                    $('#skinType').val(data.user.preferences.skin_type || '');
+                    $('#monthlyBudget').val(data.user.preferences.monthly_budget || '');
+                    $('#age').val(data.user.preferences.age || '');
+                    $('#gender').val(data.user.preferences.gender || '');
+                    
+                    $('input[name="skin_concerns"]').each(function() {
+                        $(this).prop('checked', concerns.includes($(this).val()));
+                    });
+                    
+                    $('input[name="uses_retinol"]').prop('checked', data.user.preferences.uses_retinol || false);
+                    $('input[name="uses_vitamin_c"]').prop('checked', data.user.preferences.uses_vitamin_c || false);
+                    $('input[name="uses_niacinamide"]').prop('checked', data.user.preferences.uses_niacinamide || false);
+                    $('input[name="uses_hyaluronic"]').prop('checked', data.user.preferences.uses_hyaluronic || false);
+                    
+                    // Calculate completion
+                    const totalFields = 6;
+                    let filled = 0;
+                    if (data.user.preferences.skin_type) filled++;
+                    if (concerns.length > 0) filled++;
+                    if (data.user.preferences.monthly_budget) filled++;
+                    if (data.user.preferences.age) filled++;
+                    if (data.user.preferences.gender) filled++;
+                    const completion = Math.round((filled / totalFields) * 100);
+                    $('#profileComplete').text(completion + '%');
+                }
+            }
+        }
+    });
+}
+
+function savePreferences() {
+    const formData = {
+        skin_type: $('#skinType').val(),
+        skin_concerns: $('input[name="skin_concerns"]:checked').map(function() { return $(this).val(); }).get(),
+        monthly_budget: $('#monthlyBudget').val(),
+        age: $('#age').val(),
+        gender: $('#gender').val(),
+        uses_retinol: $('input[name="uses_retinol"]').is(':checked'),
+        uses_vitamin_c: $('input[name="uses_vitamin_c"]').is(':checked'),
+        uses_niacinamide: $('input[name="uses_niacinamide"]').is(':checked'),
+        uses_hyaluronic: $('input[name="uses_hyaluronic"]').is(':checked')
+    };
+    
+    $.ajax({
+        url: '/api/user/preferences',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function(data) {
+            if (data.success) {
+                showToast('Preferences saved successfully!', 'success');
+                loadProfileData();
+                $('#preferencesForm').slideUp();
+                $('#preferencesDisplay').slideDown();
+            }
+        },
+        error: function() {
+            showToast('Error saving preferences', 'error');
+        }
+    });
+}
+
+function loadActivityHistory() {
+    $.ajax({
+        url: '/api/user/activity',
+        method: 'GET',
+        success: function(data) {
+            if (data.success && data.activities.length > 0) {
+                const html = data.activities.map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-action">${activity.action}</div>
+                        <div class="activity-date">${formatDate(activity.timestamp)}</div>
+                    </div>
+                `).join('');
+                $('#activityHistory').html(html);
+            } else {
+                $('#activityHistory').html('<p style="text-align:center; color:rgba(255,255,255,0.5); padding:2rem;">No activity yet</p>');
+            }
+        }
+    });
+}
+
+function deleteAccount() {
+    $.ajax({
+        url: '/api/user/delete',
+        method: 'DELETE',
+        success: function(data) {
+            if (data.success) {
+                showToast('Account deleted successfully', 'success');
+                setTimeout(() => { window.location.href = '/'; }, 2000);
+            }
+        }
+    });
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric'
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,592 @@
+{% extends "base.html" %}
+
+{% block title %}Complete Your Profile — Inzaghi's Bliss{% endblock %}
+
+{% block extra_css %}
+<style>
+    .setup-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+    
+    .setup-card {
+        max-width: 800px;
+        width: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 28px;
+        padding: 2rem;
+        position: relative;
+        animation: fadeInUp 0.6s ease;
+    }
+    
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .setup-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #6C63FF, #FF6584, #00D2FF, #6C63FF);
+        background-size: 200% 100%;
+        animation: gradientFlow 3s ease infinite;
+    }
+    
+    @keyframes gradientFlow {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    
+    .setup-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .setup-header h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #FFFFFF 0%, #6C63FF 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    
+    .setup-header p {
+        color: rgba(255,255,255,0.5);
+        font-size: 0.9rem;
+    }
+    
+    /* Progress Bar */
+    .progress-section {
+        margin-bottom: 2rem;
+    }
+    
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.6);
+    }
+    
+    .progress-bar {
+        height: 6px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #6C63FF, #FF6584);
+        border-radius: 6px;
+        width: 0%;
+        transition: width 0.5s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .progress-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 1.8s infinite;
+    }
+    
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    
+    /* Form Sections */
+    .form-section {
+        margin-bottom: 1.8rem;
+    }
+    
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .section-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, rgba(108,99,255,0.15) 0%, rgba(255,101,132,0.1) 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .section-icon i {
+        color: #6C63FF;
+        font-size: 1rem;
+    }
+    
+    .section-title h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.9);
+    }
+    
+    /* Form Elements */
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.7);
+    }
+    
+    .form-group label i {
+        margin-right: 0.4rem;
+        color: #6C63FF;
+    }
+    
+    .required {
+        color: #FF6584;
+        margin-left: 0.2rem;
+    }
+    
+    .form-select {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        font-size: 0.9rem;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236C63FF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1rem;
+    }
+    
+    .form-select:hover, .form-select:focus {
+        background: rgba(255,255,255,0.08);
+        border-color: #6C63FF;
+        outline: none;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        font-size: 0.9rem;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #6C63FF;
+        background: rgba(255,255,255,0.08);
+    }
+    
+    /* Checkbox Grid */
+    .checkbox-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.6rem;
+        margin-top: 0.5rem;
+    }
+    
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 0.8rem;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .checkbox-item:hover {
+        background: rgba(108,99,255,0.08);
+        border-color: rgba(108,99,255,0.3);
+    }
+    
+    .checkbox-item.selected {
+        background: rgba(108,99,255,0.12);
+        border-color: #6C63FF;
+    }
+    
+    .checkbox-item input {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: #6C63FF;
+    }
+    
+    .checkbox-item label {
+        cursor: pointer;
+        margin: 0;
+        flex: 1;
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.7);
+    }
+    
+    /* Two Column Layout */
+    .two-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    /* Submit Button */
+    .btn-submit {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #6C63FF 0%, #FF6584 100%);
+        border: none;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        margin-top: 1rem;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108,99,255,0.4);
+    }
+    
+    .btn-submit:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    /* Skip Link */
+    .skip-link {
+        text-align: center;
+        margin-top: 1.2rem;
+    }
+    
+    .skip-link a {
+        color: rgba(255,255,255,0.4);
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: color 0.3s;
+    }
+    
+    .skip-link a:hover {
+        color: #6C63FF;
+    }
+    
+    @media (max-width: 640px) {
+        .setup-card { padding: 1.5rem; }
+        .setup-header h2 { font-size: 1.4rem; }
+        .two-columns { grid-template-columns: 1fr; }
+        .checkbox-grid { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="setup-container">
+    <div class="setup-card">
+        <div class="setup-header">
+            <h2>Complete Your Profile</h2>
+            <p>Tell us about your skin to get personalized recommendations</p>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-section">
+            <div class="progress-label">
+                <span><i class="fas fa-chart-line"></i> Profile Completion</span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <form id="profileForm">
+            <!-- Section 1: Skin Type -->
+            <div class="form-section">
+                <div class="section-title">
+                    <div class="section-icon"><i class="fas fa-droplet"></i></div>
+                    <h3>Skin Type</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-spa"></i> What's your skin type? <span class="required">*</span></label>
+                    <select name="skin_type" id="skinType" class="form-select" required>
+                        <option value="" disabled selected>Select your skin type...</option>
+                        <option value="Oily">Oily — Shiny, prone to breakouts</option>
+                        <option value="Dry">Dry — Flaky, tight feeling</option>
+                        <option value="Combination">Combination — Oily T-zone, dry cheeks</option>
+                        <option value="Normal">Normal — Balanced, minimal issues</option>
+                        <option value="Sensitive">Sensitive — Easily irritated, redness prone</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Section 2: Skin Concerns -->
+            <div class="form-section">
+                <div class="section-title">
+                    <div class="section-icon"><i class="fas fa-list-check"></i></div>
+                    <h3>Skin Concerns</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-list"></i> What are your main skin concerns? <span class="required">*</span></label>
+                    <div class="checkbox-grid" id="concernsGrid">
+                        <div class="checkbox-item" data-value="Acne">
+                            <input type="checkbox" name="skin_concerns" value="Acne" id="concern1">
+                            <label for="concern1">Acne & Breakouts</label>
+                        </div>
+                        <div class="checkbox-item" data-value="Wrinkles">
+                            <input type="checkbox" name="skin_concerns" value="Wrinkles" id="concern2">
+                            <label for="concern2">Wrinkles & Fine Lines</label>
+                        </div>
+                        <div class="checkbox-item" data-value="Pigmentation">
+                            <input type="checkbox" name="skin_concerns" value="Pigmentation" id="concern3">
+                            <label for="concern3">Hyperpigmentation</label>
+                        </div>
+                        <div class="checkbox-item" data-value="Redness">
+                            <input type="checkbox" name="skin_concerns" value="Redness" id="concern4">
+                            <label for="concern4">Redness & Inflammation</label>
+                        </div>
+                        <div class="checkbox-item" data-value="Dryness">
+                            <input type="checkbox" name="skin_concerns" value="Dryness" id="concern5">
+                            <label for="concern5">Dryness & Dehydration</label>
+                        </div>
+                        <div class="checkbox-item" data-value="Large Pores">
+                            <input type="checkbox" name="skin_concerns" value="Large Pores" id="concern6">
+                            <label for="concern6">Large Pores</label>
+                        </div>
+                        <div class="checkbox-item" data-value="Dullness">
+                            <input type="checkbox" name="skin_concerns" value="Dullness" id="concern7">
+                            <label for="concern7">Dullness & Uneven Texture</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 3: Personal Info -->
+            <div class="form-section">
+                <div class="section-title">
+                    <div class="section-icon"><i class="fas fa-user"></i></div>
+                    <h3>Personal Information</h3>
+                </div>
+                
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar"></i> Your age <span class="required">*</span></label>
+                        <input type="number" name="age" id="age" class="form-input" 
+                               placeholder="e.g., 28" min="18" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-venus-mars"></i> Gender</label>
+                        <select name="gender" id="gender" class="form-select">
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Non-binary">Non-binary</option>
+                            <option value="Prefer not say">Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 4: Budget -->
+            <div class="form-section">
+                <div class="section-title">
+                    <div class="section-icon"><i class="fas fa-wallet"></i></div>
+                    <h3>Budget</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-dollar-sign"></i> Monthly skincare budget (USD)</label>
+                    <input type="number" name="monthly_budget" id="budget" class="form-input" 
+                           placeholder="e.g., 50" step="10" min="0">
+                </div>
+            </div>
+            
+            <!-- Section 5: Active Ingredients -->
+            <div class="form-section">
+                <div class="section-title">
+                    <div class="section-icon"><i class="fas fa-flask"></i></div>
+                    <h3>Active Ingredients</h3>
+                </div>
+                
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="uses_retinol" id="retinol">
+                        <label for="retinol">Retinol / Retinoids</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="uses_vitamin_c" id="vitaminC">
+                        <label for="vitaminC">Vitamin C</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="uses_niacinamide" id="niacinamide">
+                        <label for="niacinamide">Niacinamide (Vitamin B3)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="uses_hyaluronic" id="hyaluronic">
+                        <label for="hyaluronic">Hyaluronic Acid</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span>Complete Profile</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            
+            <div class="skip-link">
+                <a href="{{ url_for('dashboard') }}">
+                    <i class="fas fa-clock"></i> I'll do this later
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Update progress bar
+    function updateProgress() {
+        let completed = 0;
+        let total = 4;
+        
+        if ($('#skinType').val() && $('#skinType').val() !== '') completed++;
+        if ($('input[name="skin_concerns"]:checked').length > 0) completed++;
+        if ($('#age').val() && $('#age').val() !== '') completed++;
+        if ($('#budget').val() && $('#budget').val() !== '') completed++;
+        
+        const percent = Math.min(Math.round((completed / total) * 100), 100);
+        $('#progressFill').css('width', percent + '%');
+        $('#progressPercent').text(percent + '%');
+        
+        return completed === total;
+    }
+    
+    // Checkbox item styling
+    $('.checkbox-item').click(function(e) {
+        if (!$(e.target).is('input')) {
+            const checkbox = $(this).find('input');
+            checkbox.prop('checked', !checkbox.prop('checked'));
+        }
+        
+        if ($(this).find('input').is(':checked')) {
+            $(this).addClass('selected');
+        } else {
+            $(this).removeClass('selected');
+        }
+        
+        updateProgress();
+    });
+    
+    // Initialize selected states
+    $('.checkbox-item input').each(function() {
+        if ($(this).is(':checked')) {
+            $(this).closest('.checkbox-item').addClass('selected');
+        }
+    });
+    
+    // Monitor changes
+    $('#skinType, #age, #budget').on('change input', updateProgress);
+    $('input[name="skin_concerns"]').on('change', updateProgress);
+    
+    updateProgress();
+    
+    // Form submission
+    $('#profileForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        if (!$('#skinType').val()) {
+            showToast('Please select your skin type', 'error');
+            $('#skinType').focus();
+            return;
+        }
+        
+        if ($('input[name="skin_concerns"]:checked').length === 0) {
+            showToast('Please select at least one skin concern', 'error');
+            return;
+        }
+        
+        if (!$('#age').val()) {
+            showToast('Please enter your age', 'error');
+            $('#age').focus();
+            return;
+        }
+        
+        const formData = {
+            skin_type: $('#skinType').val(),
+            skin_concerns: $('input[name="skin_concerns"]:checked').map(function() { return $(this).val(); }).get(),
+            age: $('#age').val(),
+            gender: $('#gender').val(),
+            monthly_budget: $('#budget').val(),
+            uses_retinol: $('#retinol').is(':checked'),
+            uses_vitamin_c: $('#vitaminC').is(':checked'),
+            uses_niacinamide: $('#niacinamide').is(':checked'),
+            uses_hyaluronic: $('#hyaluronic').is(':checked')
+        };
+        
+        const btn = $('#submitBtn');
+        const originalText = btn.html();
+        btn.html('<i class="fas fa-spinner fa-pulse"></i> Saving...').prop('disabled', true);
+        
+        $.ajax({
+            url: '{{ url_for("profile_setup") }}',
+            method: 'POST',
+            data: formData,
+            success: function(data) {
+                if (data.success) {
+                    btn.html('<i class="fas fa-check"></i> Complete!');
+                    showToast('Profile saved successfully! Redirecting...', 'success');
+                    setTimeout(() => { window.location.href = data.redirect; }, 1500);
+                } else {
+                    showToast('Error saving profile', 'error');
+                    btn.html(originalText).prop('disabled', false);
+                }
+            },
+            error: function() {
+                showToast('Error saving profile. Please try again.', 'error');
+                btn.html(originalText).prop('disabled', false);
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

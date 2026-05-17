@@ -1,0 +1,697 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Inzaghi's Bliss{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Global Animations */
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.02); }
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+    
+    @keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-50px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes slideInRight {
+        from { opacity: 0; transform: translateX(50px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .dashboard-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    /* Welcome Section */
+    .welcome-area {
+        background: linear-gradient(135deg, rgba(108,99,255,0.15) 0%, rgba(255,101,132,0.08) 100%);
+        border-radius: 28px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        animation: slideInLeft 0.8s ease;
+    }
+    
+    .welcome-area::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+        transform: rotate(45deg);
+        animation: shimmer 8s infinite;
+    }
+    
+    .welcome-greeting {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .welcome-greeting span {
+        background: linear-gradient(135deg, #6C63FF, #FF6584);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    .welcome-message {
+        color: rgba(255,255,255,0.6);
+        font-size: 0.95rem;
+    }
+    
+    /* Live Widgets */
+    .live-widgets {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+        animation: scaleIn 0.6s ease 0.2s both;
+    }
+    
+    .widget-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        padding: 1.2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .widget-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(108,99,255,0.3);
+    }
+    
+    .widget-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .widget-value { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, #6C63FF, #FF6584); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .widget-label { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 0.3rem; }
+    
+    /* Stats Cards */
+    .stats-showcase {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+        animation: slideInRight 0.8s ease 0.1s both;
+    }
+    
+    .stat-card-enhanced {
+        background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        padding: 1.2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card-enhanced:hover {
+        transform: translateY(-8px) scale(1.02);
+        border-color: rgba(108,99,255,0.4);
+    }
+    
+    .stat-card-enhanced::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, #6C63FF, #FF6584);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card-enhanced:hover::after { transform: scaleX(1); }
+    .stat-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .stat-number-enhanced { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #6C63FF, #FF6584); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+    
+    /* Product Carousel */
+    .featured-section, .trending-section { margin-bottom: 2rem; animation: scaleIn 0.6s ease 0.3s both; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .section-header h3 { font-size: 1.2rem; font-weight: 600; }
+    .carousel-controls { display: flex; gap: 0.5rem; }
+    .carousel-btn {
+        width: 36px; height: 36px;
+        background: linear-gradient(135deg, rgba(108,99,255,0.15) 0%, rgba(255,101,132,0.1) 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: white;
+    }
+    .carousel-btn:hover { background: linear-gradient(135deg, #6C63FF, #FF6584); transform: scale(1.1); }
+    
+    .product-carousel { position: relative; overflow: hidden; border-radius: 24px; }
+    .carousel-track { display: flex; transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1); gap: 1.5rem; }
+    .carousel-item {
+        min-width: calc(33.333% - 1rem);
+        background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    .carousel-item:hover { transform: translateY(-5px); border-color: rgba(108,99,255,0.4); }
+    
+    .product-visual {
+        height: 180px;
+        background: linear-gradient(135deg, rgba(108,99,255,0.15) 0%, rgba(255,101,132,0.15) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .product-visual::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .carousel-item:hover .product-visual::before { opacity: 1; }
+    .product-icon { font-size: 3rem; animation: float 3s ease-in-out infinite; }
+    
+    /* Ingredient Cards */
+    .ingredients-analysis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+        animation: slideInLeft 0.6s ease 0.4s both;
+    }
+    
+    .ingredient-card {
+        background: linear-gradient(135deg, rgba(108,99,255,0.08) 0%, rgba(255,101,132,0.05) 100%);
+        border: 1px solid rgba(108,99,255,0.2);
+        border-radius: 16px;
+        padding: 1rem;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    .ingredient-card:hover { transform: translateX(5px); border-color: #6C63FF; }
+    .ingredient-name { font-weight: 600; margin-bottom: 0.5rem; }
+    .ingredient-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin: 0.5rem 0; }
+    .ingredient-fill { height: 100%; background: linear-gradient(90deg, #6C63FF, #FF6584); border-radius: 2px; width: 0%; transition: width 1s ease; }
+    
+    /* Skin Analyzer */
+    .skin-analyzer {
+        background: linear-gradient(135deg, rgba(108,99,255,0.08) 0%, rgba(255,101,132,0.05) 100%);
+        border-radius: 24px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        animation: slideInRight 0.6s ease 0.5s both;
+    }
+    .analyzer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
+    .analyzer-title { font-size: 1.1rem; font-weight: 600; }
+    .analyzer-badge { background: linear-gradient(135deg, rgba(108,99,255,0.2) 0%, rgba(255,101,132,0.2) 100%); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; }
+    .analyzer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+    .analyzer-metric { text-align: center; padding: 0.8rem; background: rgba(255,255,255,0.03); border-radius: 16px; transition: all 0.3s; }
+    .analyzer-metric:hover { background: rgba(108,99,255,0.1); transform: scale(1.05); }
+    .metric-value { font-size: 1.3rem; font-weight: 700; color: #6C63FF; }
+    .metric-label { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 0.3rem; }
+    
+    /* Comparison Tool */
+    .comparison-tool {
+        background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+        border-radius: 24px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        animation: scaleIn 0.6s ease 0.6s both;
+    }
+    .comparison-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .comparison-item {
+        background: rgba(255,255,255,0.03);
+        border-radius: 16px;
+        padding: 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
+    }
+    .comparison-item.selected { background: linear-gradient(135deg, rgba(108,99,255,0.15) 0%, rgba(255,101,132,0.1) 100%); border: 1px solid rgba(108,99,255,0.3); }
+    .comparison-item:hover { transform: translateY(-3px); }
+    .compare-check { position: absolute; top: 0.5rem; right: 0.5rem; width: 20px; height: 20px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
+    .comparison-item.selected .compare-check { background: #00D68F; color: white; }
+    
+    /* Feedback Section */
+    .feedback-section { margin-bottom: 2rem; animation: scaleIn 0.6s ease 0.8s both; }
+    .rating-star { font-size: 2rem; background: none; border: none; color: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s; }
+    .rating-star:hover, .rating-star.active { color: #FFB347; transform: scale(1.1); }
+    
+    /* Products Grid */
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+    .product-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    .product-card:hover { transform: translateY(-5px); border-color: rgba(108,99,255,0.3); }
+    .product-image { height: 140px; background: linear-gradient(135deg, rgba(108,99,255,0.1) 0%, rgba(255,101,132,0.1) 100%); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+    .product-details { padding: 1rem; }
+    .product-name { font-weight: 700; margin-bottom: 0.3rem; }
+    .product-brand { color: #6C63FF; font-size: 0.8rem; }
+    .product-price { font-weight: 700; color: #00D2FF; }
+    .product-rating { color: #FFB347; letter-spacing: 2px; }
+    .match-badge { background: linear-gradient(135deg, #6C63FF, #FF6584); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; display: inline-block; }
+    .trending-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #FF6584, #FF3B5C); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.7rem; margin-left: 0.5rem; }
+    
+    .loading-state { text-align: center; padding: 2rem; grid-column: 1/-1; }
+    .spinner { width: 40px; height: 40px; border: 2px solid rgba(108,99,255,0.2); border-top-color: #6C63FF; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    @media (max-width: 1024px) { .carousel-item { min-width: calc(50% - 0.75rem); } }
+    @media (max-width: 768px) {
+        .dashboard-wrapper { padding: 1rem; }
+        .stats-showcase { grid-template-columns: repeat(2, 1fr); }
+        .carousel-item { min-width: 100%; }
+        .welcome-greeting { font-size: 1.3rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- Welcome Area -->
+    <div class="welcome-area">
+        <div class="welcome-greeting">
+            Welcome back, <span id="userName">{{ session.get('user_email', 'User').split('@')[0] }}</span>
+        </div>
+        <div class="welcome-message" id="dynamicMessage">Loading your personalized insights...</div>
+    </div>
+    
+    <!-- Live Widgets -->
+    <div class="live-widgets">
+        <div class="widget-card"><div class="widget-icon">⏰</div><div class="widget-value" id="liveTime">--:--</div><div class="widget-label">Current Time</div></div>
+        <div class="widget-card"><div class="widget-icon">📅</div><div class="widget-value" id="liveDate">--</div><div class="widget-label">Today's Date</div></div>
+        <div class="widget-card"><div class="widget-icon">🌡️</div><div class="widget-value" id="skinMood">--</div><div class="widget-label">Skin Mood</div></div>
+        <div class="widget-card"><div class="widget-icon">🎯</div><div class="widget-value" id="dailyGoal">--</div><div class="widget-label">Daily Goal</div></div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="stats-showcase">
+        <div class="stat-card-enhanced" onclick="showInsight('skin')"><div class="stat-icon">✨</div><div class="stat-number-enhanced" id="skinScore">--</div><div class="stat-label">Skin Health Score</div></div>
+        <div class="stat-card-enhanced" onclick="showInsight('routine')"><div class="stat-icon">🔄</div><div class="stat-number-enhanced" id="routineScore">--</div><div class="stat-label">Routine Consistency</div></div>
+        <div class="stat-card-enhanced" onclick="showInsight('match')"><div class="stat-icon">🎯</div><div class="stat-number-enhanced" id="matchScore">--</div><div class="stat-label">Product Match</div></div>
+        <div class="stat-card-enhanced" onclick="showInsight('recs')"><div class="stat-icon">💡</div><div class="stat-number-enhanced" id="recCount">--</div><div class="stat-label">Recommendations</div></div>
+    </div>
+    
+    <!-- Featured Products Carousel -->
+    <div class="featured-section">
+        <div class="section-header"><h3>✨ Featured For You</h3><div class="carousel-controls"><button class="carousel-btn" id="prevBtn">←</button><button class="carousel-btn" id="nextBtn">→</button></div></div>
+        <div class="product-carousel"><div class="carousel-track" id="carouselTrack"><div class="loading-state"><div class="spinner"></div><p>Loading products...</p></div></div></div>
+    </div>
+    
+    <!-- Ingredient Analysis -->
+    <div class="ingredients-analysis" id="ingredientsContainer"><div style="grid-column:1/-1;text-align:center;padding:2rem;">Loading ingredient analysis...</div></div>
+    
+    <!-- Skin Analyzer -->
+    <div class="skin-analyzer">
+        <div class="analyzer-header"><div class="analyzer-title">🔬 Skin Health Analyzer</div><div class="analyzer-badge" id="analyzerStatus">Analyzing...</div></div>
+        <div class="analyzer-grid" id="analyzerGrid">
+            <div class="analyzer-metric"><div class="metric-value" id="hydration">--%</div><div class="metric-label">Hydration Level</div></div>
+            <div class="analyzer-metric"><div class="metric-value" id="elasticity">--%</div><div class="metric-label">Elasticity</div></div>
+            <div class="analyzer-metric"><div class="metric-value" id="protection">--%</div><div class="metric-label">Protection Score</div></div>
+            <div class="analyzer-metric"><div class="metric-value" id="repair">--%</div><div class="metric-label">Repair Rate</div></div>
+        </div>
+    </div>
+    
+    <!-- Personalized Recommendations (Based on Saved Preferences) -->
+    <div class="featured-section">
+        <div class="section-header"><h3>🎯 Just For You — Based on Your Profile</h3><span class="trending-badge" style="background:linear-gradient(135deg,#00D68F,#6C63FF);">Smart Match</span></div>
+        <div id="personalizedGrid" class="products-grid"><div class="loading-state"><div class="spinner"></div><p>Analyzing your preferences...</p></div></div>
+    </div>
+    
+    <!-- Product Comparison Tool -->
+    <div class="comparison-tool">
+        <div class="section-header"><h3>📊 Compare Products</h3><button class="carousel-btn" id="compareBtn" style="width:auto;padding:0.5rem 1rem;border-radius:50px;">Compare Selected</button></div>
+        <div class="comparison-grid" id="comparisonGrid"><div class="loading-state"><div class="spinner"></div><p>Loading products...</p></div></div>
+    </div>
+    
+    <!-- Trending Products -->
+    <div class="trending-section">
+        <div class="section-header"><h3>🔥 Trending This Week</h3><span class="trending-badge">+245% this week</span></div>
+        <div class="product-carousel"><div class="carousel-track" id="trendingTrack"><div class="loading-state"><div class="spinner"></div><p>Loading trends...</p></div></div></div>
+    </div>
+    
+    <!-- Feedback Section -->
+    <div class="feedback-section">
+        <div class="section-header"><h3>⭐ Rate Your Experience</h3><p style="font-size:0.8rem;color:rgba(255,255,255,0.5);">Help us personalize better</p></div>
+        <div style="background:linear-gradient(135deg,rgba(255,255,255,0.04) 0%,rgba(255,255,255,0.01) 100%);border-radius:20px;padding:1.5rem;">
+            <div style="display:flex;gap:0.5rem;justify-content:center;margin-bottom:1rem;">
+                <button class="rating-star" data-rating="1">☆</button>
+                <button class="rating-star" data-rating="2">☆</button>
+                <button class="rating-star" data-rating="3">☆</button>
+                <button class="rating-star" data-rating="4">☆</button>
+                <button class="rating-star" data-rating="5">☆</button>
+            </div>
+            <textarea id="feedbackText" class="form-input" rows="3" placeholder="Share your experience with us... What products worked? What would you like to see improved?" style="width:100%;margin-bottom:1rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:0.8rem;color:white;"></textarea>
+            <div style="display:flex;gap:1rem;justify-content:center;">
+                <button id="submitFeedbackBtn" class="btn-primary" style="padding:0.6rem 1.2rem;">Submit Feedback</button>
+                <button id="viewFeedbackBtn" class="btn-secondary" style="padding:0.6rem 1.2rem;">View My Feedback</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentIndex = 0;
+let products = [];
+let selectedCompare = [];
+
+$(document).ready(function() {
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    
+    loadDashboardData();
+    loadProducts();
+    loadTrendingProducts();
+    loadIngredients();
+    loadPersonalizedRecommendations();
+    updateSkinMood();
+    setInterval(updateSkinMood, 30000);
+    updateDailyGoal();
+    
+    $('#prevBtn').click(() => navigateCarousel(-1));
+    $('#nextBtn').click(() => navigateCarousel(1));
+    $('#compareBtn').click(() => compareProducts());
+    
+    // Rating stars
+    let currentRating = 0;
+    $('.rating-star').click(function() {
+        currentRating = $(this).data('rating');
+        $('.rating-star').each(function() {
+            const rating = $(this).data('rating');
+            if (rating <= currentRating) $(this).html('★').addClass('active');
+            else $(this).html('☆').removeClass('active');
+        });
+    });
+    
+    $('#submitFeedbackBtn').click(function() {
+        const feedback = $('#feedbackText').val();
+        if (currentRating === 0) { showToast('Please select a rating first', 'error'); return; }
+        if (!feedback.trim()) { showToast('Please share your feedback', 'error'); return; }
+        
+        $.ajax({
+            url: '/api/submit-feedback', method: 'POST', contentType: 'application/json',
+            data: JSON.stringify({ rating: currentRating, feedback: feedback, product_name: 'Platform Experience' }),
+            success: function(data) {
+                if (data.success) {
+                    showToast('Thank you for your feedback!', 'success');
+                    $('#feedbackText').val('');
+                    currentRating = 0;
+                    $('.rating-star').html('☆').removeClass('active');
+                }
+            }
+        });
+    });
+});
+
+function updateDateTime() {
+    const now = new Date();
+    $('#liveTime').text(now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+    $('#liveDate').text(now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }));
+}
+
+function updateSkinMood() {
+    const moods = ['Radiant', 'Balanced', 'Calm', 'Glowing', 'Fresh', 'Revitalized'];
+    $('#skinMood').text(moods[Math.floor(Math.random() * moods.length)]);
+    const messages = ["Your skin is looking radiant today!", "Consistency is paying off beautifully!", "Keep up with your amazing routine!", "Your glow is absolutely stunning!", "Today is a great skin day!", "Your commitment is showing results!"];
+    $('#dynamicMessage').text(messages[Math.floor(Math.random() * messages.length)]);
+}
+
+function updateDailyGoal() {
+    const hour = new Date().getHours();
+    if (hour < 12) $('#dailyGoal').text("Morning routine pending");
+    else if (hour < 18) $('#dailyGoal').text("Hydration check");
+    else $('#dailyGoal').text("Evening ritual time");
+}
+
+function loadDashboardData() {
+    $.ajax({
+        url: '/api/analytics', method: 'GET',
+        success: function(data) {
+            if (data.user_stats) {
+                animateNumber('skinScore', data.user_stats.skin_health_score || 89);
+                animateNumber('routineScore', data.user_stats.routine_consistency || 87);
+                animateNumber('matchScore', data.user_stats.product_match_score || 77);
+                animateNumber('recCount', data.user_stats.total_recommendations || 5);
+                $('#hydration').text(Math.floor(65 + Math.random() * 20) + '%');
+                $('#elasticity').text(Math.floor(55 + Math.random() * 25) + '%');
+                $('#protection').text(Math.floor(70 + Math.random() * 20) + '%');
+                $('#repair').text(Math.floor(60 + Math.random() * 25) + '%');
+                $('#analyzerStatus').text('Analysis Complete');
+            }
+        }
+    });
+}
+
+function loadProducts() {
+    $.ajax({
+        url: '/api/recommendations', method: 'POST', contentType: 'application/json', data: JSON.stringify({}),
+        success: function(data) {
+            if (data.success && data.products) {
+                products = data.products;
+                renderCarousel();
+                renderComparisonGrid();
+            }
+        }
+    });
+}
+
+function renderCarousel() {
+    const track = $('#carouselTrack');
+    track.empty();
+    products.forEach(product => {
+        const stars = '★'.repeat(Math.floor(product.rating)) + '☆'.repeat(5 - Math.floor(product.rating));
+        track.append(`
+            <div class="carousel-item" onclick="viewProduct('${product.name}')">
+                <div class="product-visual"><div class="product-icon">${product.category === 'Cleanser' ? '🧼' : product.category === 'Serum' ? '✨' : product.category === 'Moisturizer' ? '💧' : '☀️'}</div></div>
+                <div style="padding:1rem;">
+                    <div style="font-weight:700;">${product.name}</div>
+                    <div style="color:#6C63FF;font-size:0.8rem;">${product.brand}</div>
+                    <div style="display:flex;justify-content:space-between;margin:0.5rem 0;"><span style="color:#00D2FF;font-weight:700;">$${product.price}</span><span style="color:#FFB347;">${stars}</span></div>
+                    <span class="match-badge">${product.match_percentage}% Match</span>
+                </div>
+            </div>
+        `);
+    });
+}
+
+function renderComparisonGrid() {
+    const grid = $('#comparisonGrid');
+    grid.empty();
+    products.slice(0, 6).forEach(product => {
+        const isSelected = selectedCompare.includes(product.name);
+        grid.append(`
+            <div class="comparison-item ${isSelected ? 'selected' : ''}" onclick="toggleCompare('${product.name.replace(/'/g, "\\'")}')">
+                <div class="compare-check">${isSelected ? '✓' : ''}</div>
+                <div style="font-weight:600;">${product.name}</div>
+                <div style="color:#6C63FF;">${product.brand}</div>
+                <div>$${product.price}</div>
+                <div style="font-size:0.7rem;">${product.match_percentage}% match</div>
+            </div>
+        `);
+    });
+}
+
+function toggleCompare(productName) {
+    const index = selectedCompare.indexOf(productName);
+    if (index === -1 && selectedCompare.length < 3) selectedCompare.push(productName);
+    else if (index !== -1) selectedCompare.splice(index, 1);
+    renderComparisonGrid();
+}
+
+function compareProducts() {
+    if (selectedCompare.length < 2) { alert('Please select at least 2 products to compare'); return; }
+    const selectedProducts = products.filter(p => selectedCompare.includes(p.name));
+    let html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;">';
+    selectedProducts.forEach(p => {
+        html += `<div style="background:linear-gradient(135deg,rgba(108,99,255,0.1) 0%,rgba(255,101,132,0.05) 100%);border-radius:16px;padding:1rem;">
+            <div style="font-weight:700;">${p.name}</div><div style="color:#6C63FF;">${p.brand}</div>
+            <div>Price: $${p.price}</div><div>Rating: ${p.rating}/5</div><div>Match: ${p.match_percentage}%</div>
+        </div>`;
+    });
+    html += '</div>';
+    showModal(html, 'Product Comparison');
+}
+
+function loadTrendingProducts() {
+    const trending = [
+        {name: 'Vitamin C Brightening Serum', brand: 'GlowLab', price: 45, rating: 4.8, trend: '+156%'},
+        {name: 'Hyaluronic Acid Moisturizer', brand: 'DewDrops', price: 32, rating: 4.7, trend: '+98%'},
+        {name: 'Niacinamide Treatment', brand: 'ClearSkin', price: 28, rating: 4.9, trend: '+234%'}
+    ];
+    const track = $('#trendingTrack');
+    track.empty();
+    trending.forEach(p => {
+        track.append(`
+            <div class="carousel-item">
+                <div class="product-visual"><div class="product-icon">🔥</div></div>
+                <div style="padding:1rem;">
+                    <div style="font-weight:700;">${p.name}</div>
+                    <div style="color:#FF6584;">${p.trend} trending</div>
+                    <div>$${p.price}</div>
+                    <div style="color:#FFB347;">${'★'.repeat(p.rating)}</div>
+                </div>
+            </div>
+        `);
+    });
+}
+
+function loadIngredients() {
+    const ingredients = [
+        {name: 'Niacinamide', usage: 78, benefit: 'Reduces inflammation and redness'},
+        {name: 'Vitamin C', usage: 65, benefit: 'Brightens and protects from damage'},
+        {name: 'Hyaluronic Acid', usage: 82, benefit: 'Deep hydration and plumping'},
+        {name: 'Retinol', usage: 45, benefit: 'Anti-aging and cell renewal'},
+        {name: 'Ceramides', usage: 58, benefit: 'Repairs skin barrier'},
+        {name: 'Salicylic Acid', usage: 52, benefit: 'Clears pores and fights acne'}
+    ];
+    const container = $('#ingredientsContainer');
+    container.empty();
+    ingredients.forEach(ing => {
+        container.append(`
+            <div class="ingredient-card" onclick="showModal('<strong>${ing.name}</strong><br><br>${ing.benefit}<br><br><span style=\"color:#6C63FF;\">Recommended for your skin profile</span>', 'Ingredient Insight')">
+                <div class="ingredient-name">${ing.name}</div>
+                <div class="ingredient-bar"><div class="ingredient-fill" style="width:${ing.usage}%"></div></div>
+                <div style="font-size:0.7rem;">${ing.usage}% of users</div>
+            </div>
+        `);
+    });
+}
+
+function loadPersonalizedRecommendations() {
+    $.ajax({
+        url: '/api/personalized-recommendations', method: 'GET',
+        success: function(data) {
+            if (data.success && data.products) {
+                const grid = $('#personalizedGrid');
+                grid.empty();
+                data.products.slice(0, 6).forEach(p => {
+                    const stars = '★'.repeat(Math.floor(p.rating)) + '☆'.repeat(5 - Math.floor(p.rating));
+                    grid.append(`
+                        <div class="product-card" onclick="rateProduct('${p.name}')">
+                            <div class="product-image"><i class="fas fa-star-of-life"></i></div>
+                            <div class="product-details">
+                                <div class="product-name">${p.name}</div>
+                                <div class="product-brand">${p.brand}</div>
+                                <div style="display:flex;justify-content:space-between;margin:0.5rem 0;">
+                                    <span class="product-price">$${p.price}</span>
+                                    <span class="product-rating">${stars}</span>
+                                </div>
+                                <span class="match-badge">${p.match_percentage}% Match</span>
+                                <div style="margin-top:0.5rem;font-size:0.7rem;">${p.benefits ? p.benefits.slice(0,2).join(' • ') : ''}</div>
+                            </div>
+                        </div>
+                    `);
+                });
+            }
+        }
+    });
+}
+
+function rateProduct(productName) {
+    let rating = prompt(`Rate ${productName} out of 5 stars:`, "5");
+    if (rating && rating >= 1 && rating <= 5) {
+        let feedback = prompt("Share your experience with this product:", "");
+        $.ajax({
+            url: '/api/submit-feedback', method: 'POST', contentType: 'application/json',
+            data: JSON.stringify({ rating: parseInt(rating), feedback: feedback || "No additional comments", product_name: productName }),
+            success: function(data) { if (data.success) showToast(`Thank you for rating ${productName}!`, 'success'); }
+        });
+    } else if (rating) alert("Please enter a rating between 1 and 5");
+}
+
+function navigateCarousel(direction) {
+    const items = $('.carousel-item');
+    const itemsPerView = window.innerWidth > 1024 ? 3 : window.innerWidth > 768 ? 2 : 1;
+    const maxIndex = Math.max(0, items.length - itemsPerView);
+    currentIndex += direction;
+    if (currentIndex < 0) currentIndex = 0;
+    if (currentIndex > maxIndex) currentIndex = maxIndex;
+    const itemWidth = items.first().outerWidth(true);
+    $('#carouselTrack').css('transform', `translateX(-${currentIndex * itemWidth}px)`);
+}
+
+function animateNumber(id, target) {
+    const el = $('#' + id);
+    const start = parseInt(el.text()) || 0;
+    const duration = 1000;
+    const increment = (target - start) / (duration / 16);
+    let current = start;
+    const timer = setInterval(() => {
+        current += increment;
+        if ((increment > 0 && current >= target) || (increment < 0 && current <= target)) {
+            el.text(target);
+            clearInterval(timer);
+        } else { el.text(Math.round(current)); }
+    }, 16);
+}
+
+function showInsight(type) {
+    const insights = {
+        skin: 'Your skin health score is based on hydration, elasticity, and protection levels.',
+        routine: 'Routine consistency tracks how well you maintain your daily skincare regimen.',
+        match: 'Product match score indicates how well products align with your skin profile.',
+        recs: 'Recommendations are personalized based on your unique skin type and concerns.'
+    };
+    showModal(insights[type] || 'Click on product cards to see detailed information.', 'Quick Insight');
+}
+
+function showModal(content, title) {
+    const modal = $('<div>').css({ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center' })
+        .html(`<div style="background:linear-gradient(135deg,rgba(15,7,25,0.98) 0%,rgba(26,14,46,0.98) 100%);border:1px solid rgba(108,99,255,0.3);border-radius:24px;max-width:400px;width:90%;padding:1.5rem;text-align:center;">
+            <h3 style="margin-bottom:1rem;">${title}</h3><p style="color:rgba(255,255,255,0.8);line-height:1.6;">${content}</p>
+            <button onclick="$(this).closest('.modal').remove()" style="margin-top:1.5rem;padding:0.5rem 1.5rem;background:linear-gradient(135deg,#6C63FF,#FF6584);border:none;border-radius:50px;color:white;cursor:pointer;">Close</button>
+        </div>`).addClass('modal');
+    $('body').append(modal);
+    modal.click(function(e) { if ($(e.target).is(modal)) modal.remove(); });
+}
+
+function viewProduct(productName) {
+    $.ajax({
+        url: '/api/predict-rating', method: 'POST', contentType: 'application/json', data: JSON.stringify({ product_name: productName }),
+        success: function(data) { showModal(`<strong>${productName}</strong><br><br>Predicted Rating: ${data.predicted_rating}/5<br>Confidence: ${data.confidence}%<br><br>Based on your skin profile and preferences.`, 'Product Analysis'); }
+    });
+}
+</script>
+{% endblock %}

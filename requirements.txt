@@ -1,0 +1,17 @@
+flask
+flask-login
+pandas
+numpy
+scikit-learn
+plotly
+dash
+dash-bootstrap-components
+matplotlib
+seaborn
+scipy
+joblib
+bcrypt
+python-dotenv
+openpyxl
+xlrd
+werkzeug
