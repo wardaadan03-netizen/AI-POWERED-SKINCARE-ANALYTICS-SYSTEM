@@ -7,5 +7,14 @@
       "timestamp": "2026-05-17T19:30:20.971277",
       "liked": true
     }
+  ],
+  "NCA@gmail.com": [
+    {
+      "product": "Platform Experience",
+      "rating": 5,
+      "feedback": "This help me alot",
+      "timestamp": "2026-07-10T21:27:53.623884",
+      "liked": true
+    }
   ]
 }
