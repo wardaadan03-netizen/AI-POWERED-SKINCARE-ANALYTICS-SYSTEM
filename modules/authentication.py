@@ -2,9 +2,10 @@ import hashlib
 import secrets
 import json
 import os
+import re
 from datetime import datetime, timedelta
 from functools import wraps
-from flask import session, request, jsonify
+from flask import session, request, jsonify, redirect, url_for
 
 class UserAuthentication:
     def __init__(self, user_db_path='data/users.json'):
@@ -144,9 +145,6 @@ class UserAuthentication:
                        'last_login': data['last_login']} 
                 for email, data in self.users.items()}
 
-# Import re for email validation
-import re
-
 # Decorator for login required routes
 def login_required(f):
     @wraps(f)
@@ -157,7 +155,3 @@ def login_required(f):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
-
-# Import for redirect
-from flask import redirect, url_for
-from functools import wraps
