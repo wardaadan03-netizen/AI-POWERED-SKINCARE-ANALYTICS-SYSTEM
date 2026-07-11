@@ -1,27 +1,109 @@
-# Virtual environment
-.venv/
-venv/
-
-# Python cache
+# ============================================
+# Python
+# ============================================
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
 
-# Jupyter
-.ipynb_checkpoints/
+# ============================================
+# Flask / Application
+# ============================================
+instance/
+.webassets-cache
+.env                    # ← CRITICAL - DO NOT COMMIT!
+.env.local
+.env.*.local
+.env.production
+.env.development
+.secrets
+.secrets.*
+*.secret
+*.key
 
-# Environment variables
-.env
+# ============================================
+# Database
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
 
-# Model files
-data/models/
-
-# VS Code
-.vscode/
-
-# System files
-.DS_Store
-
-# Dataset files
+# ============================================
+# Data Files (that get generated)
+# ============================================
+data/users.json
+data/feedback.json
 data/raw/
 data/processed/
-*.xlsx
+data/models/
+
+# ============================================
+# User Uploads
+# ============================================
+uploads/
+!uploads/.gitkeep
+
+# ============================================
+# IDE / Editor
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.log
+
+# ============================================
+# Jupyter Notebooks
+# ============================================
+.ipynb_checkpoints/
+*.ipynb
+
+# ============================================
+# Testing
+# ============================================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ============================================
+# Build / Distribution
+# ============================================
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+
+# ============================================
+# OS
+# ============================================
+Thumbs.db
+Desktop.ini
+
+# ============================================
+# Deployment
+# ============================================
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ============================================
+# Virtual Environment
+# ============================================
+.venv/
+venv/
+ENV/

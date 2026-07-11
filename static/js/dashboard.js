@@ -1,26 +1,13 @@
-// ============================================
-// DASHBOARD SPECIFIC FUNCTIONS
-// ============================================
-
 let currentChart = null;
 
 // Initialize dashboard
 function initDashboard() {
     console.log('Dashboard initializing...');
     
-    // Load user data
     loadUserProfile();
-    
-    // Load statistics
     loadStatistics();
-    
-    // Load recommendations
     loadRecommendations();
-    
-    // Initialize charts
     initCharts();
-    
-    // Set up auto-refresh
     startAutoRefresh();
 }
 
@@ -84,7 +71,6 @@ async function initCharts() {
         const response = await fetch('/api/analytics');
         const data = await response.json();
         
-        // Create 3D visualizations
         if (data.ingredient_network && document.getElementById('ingredient-network')) {
             Plotly.newPlot('ingredient-network', data.ingredient_network.data, data.ingredient_network.layout);
         }
@@ -97,7 +83,6 @@ async function initCharts() {
             Plotly.newPlot('skin-distribution', data.skin_distribution.data, data.skin_distribution.layout);
         }
         
-        // Create heatmap
         createHeatmapVisualization();
         
     } catch (error) {
@@ -141,7 +126,6 @@ function createHeatmapVisualization() {
 
 // Create fallback visualizations if API fails
 function createFallbackVisualizations() {
-    // Sample 3D scatter data
     const scatterTrace = {
         x: [25, 35, 45, 55, 65],
         y: [50, 100, 150, 200, 250],
@@ -224,7 +208,7 @@ function displaySampleRecommendations() {
         { name: 'The Ordinary Niacinamide', brand: 'The Ordinary', price: 5.90, rating: 4.4, match_percentage: 88 },
         { name: "Paula's Choice Vitamin C", brand: "Paula's Choice", price: 49.00, rating: 4.6, match_percentage: 85 },
         { name: 'La Roche-Posay Anthelios', brand: 'La Roche-Posay', price: 29.99, rating: 4.7, match_percentage: 90 },
-        { name: 'Kiehl\'s Ultra Facial Cream', brand: 'Kiehl\'s', price: 38.00, rating: 4.5, match_percentage: 82 },
+        { name: "Kiehl's Ultra Facial Cream", brand: "Kiehl's", price: 38.00, rating: 4.5, match_percentage: 82 },
         { name: 'SkinCeuticals C E Ferulic', brand: 'SkinCeuticals', price: 182.00, rating: 4.9, match_percentage: 78 }
     ];
     displayRecommendationCards(sampleProducts);
@@ -250,7 +234,7 @@ async function viewProductDetails(productName) {
     } catch (error) {
         showModal(`
             <h3>${productName}</h3>
-            <p> This product is  recommended for your skin type!</p>
+            <p>This product is recommended for your skin type!</p>
             <p>Match Score: 85%</p>
         `);
     }

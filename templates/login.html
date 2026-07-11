@@ -303,6 +303,26 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Toast notification for success */
+        .toast-success {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(0, 214, 143, 0.15);
+            border: 1px solid rgba(0, 214, 143, 0.3);
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            color: #00D68F;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
         @media (max-width: 480px) {
             .login-header { padding: 1.5rem; }
             .login-form { padding: 1.5rem; }
@@ -357,7 +377,9 @@
                     <p><strong>Demo Account</strong></p>
                     <p>Email: <strong>demo@inzaghis-bliss.com</strong></p>
                     <p>Password: <strong>demo123</strong></p>
-                    <p style="font-size: 0.7rem; margin-top: 0.5rem;">Create your own account for personalized recommendations</p>
+                    <p style="font-size: 0.7rem; margin-top: 0.5rem; color: rgba(255,255,255,0.4);">
+                        <i class="fas fa-info-circle"></i> Create your own account for personalized recommendations
+                    </p>
                 </div>
                 
                 <div class="signup-link">
@@ -367,62 +389,83 @@
         </div>
     </div>
     
+    <!-- Toast notification -->
+    <div class="toast-success" id="toastSuccess">
+        <i class="fas fa-check-circle"></i> <span id="toastMessage">Success!</span>
+    </div>
+    
     <script>
+        function showToast(message) {
+            var toast = document.getElementById('toastSuccess');
+            document.getElementById('toastMessage').textContent = message;
+            toast.style.display = 'block';
+            setTimeout(function() {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+        
         $('#loginForm').on('submit', function(e) {
             e.preventDefault();
             
-            const btn = $('#signinBtn');
-            const btnText = $('#btnText');
-            const errorDiv = $('#errorMsg');
-            const errorText = $('#errorText');
+            var btn = $('#signinBtn');
+            var btnText = $('#btnText');
+            var errorDiv = $('#errorMsg');
+            var errorText = $('#errorText');
             
             btn.prop('disabled', true);
             btnText.html('<span class="spinner-btn"></span> Signing in...');
             errorDiv.hide();
             
+            var email = $('#email').val();
+            var password = $('#password').val();
+            
+            // Simple validation
+            if (!email || !password) {
+                errorText.text('Please fill in all fields.');
+                errorDiv.show();
+                btn.prop('disabled', false);
+                btnText.html('Sign In');
+                return;
+            }
+            
             $.ajax({
                 url: '/login',
                 method: 'POST',
                 data: {
-                    email: $('#email').val(),
-                    password: $('#password').val()
+                    email: email,
+                    password: password
                 },
                 success: function(data) {
                     if (data.success) {
+                        // Set flag for disclaimer
+                        sessionStorage.setItem('justLoggedIn', 'true');
+                        sessionStorage.removeItem('disclaimerAccepted');
+                        
                         btnText.html('<i class="fas fa-check"></i> Welcome!');
-                        setTimeout(() => {
+                        showToast('Login successful! Redirecting...');
+                        
+                        setTimeout(function() {
                             window.location.href = data.redirect;
-                        }, 800);
+                        }, 1000);
                     }
                 },
                 error: function(xhr) {
-                    const response = xhr.responseJSON;
+                    var response = xhr.responseJSON;
                     errorText.text(response?.error || 'Invalid email or password. Please try again.');
                     errorDiv.show();
                     btn.prop('disabled', false);
                     btnText.html('Sign In');
                     
-                    setTimeout(() => {
+                    setTimeout(function() {
                         errorDiv.fadeOut(500);
-                    }, 4000);
+                    }, 5000);
                 }
             });
         });
         
-        // Auto-fill demo credentials on focus
-        $('#email').on('focus', function() {
-            if (!$(this).val()) {
-                $(this).val('demo@inzaghis-bliss.com');
-                $('#password').val('demo123');
-            }
-        });
-        
-        // Clear auto-fill if user starts typing
-        $('#email').on('input', function() {
-            if ($(this).val() === 'demo@inzaghis-bliss.com') {
-                $(this).val('');
-                $('#password').val('');
-            }
+        // Clear error on typing
+        $('#email, #password').on('input', function() {
+            $('#errorMsg').hide();
         });
     </script>
 </body>

@@ -1,46 +1,59 @@
-import hashlib
-import secrets
+"""
+User Authentication Module
+Handles user registration, login, and profile management
+"""
+
 import json
 import os
-import re
-from datetime import datetime, timedelta
-from functools import wraps
-from flask import session, request, jsonify, redirect, url_for
+import hashlib
+import secrets
+from datetime import datetime
+import uuid
 
 class UserAuthentication:
+    """Handles user authentication with JSON storage"""
+    
     def __init__(self, user_db_path='data/users.json'):
         self.user_db_path = user_db_path
-        self.users = self.load_users()
-        
+        self.users = {}
+        self.load_users()
+    
     def load_users(self):
         """Load users from JSON file"""
+        os.makedirs(os.path.dirname(self.user_db_path), exist_ok=True)
+        
         if os.path.exists(self.user_db_path):
-            with open(self.user_db_path, 'r') as f:
-                return json.load(f)
-        return {}
+            try:
+                with open(self.user_db_path, 'r') as f:
+                    self.users = json.load(f)
+            except (json.JSONDecodeError, FileNotFoundError):
+                self.users = {}
+        else:
+            self.users = {}
+            self.save_users()
     
     def save_users(self):
         """Save users to JSON file"""
         os.makedirs(os.path.dirname(self.user_db_path), exist_ok=True)
         with open(self.user_db_path, 'w') as f:
-            json.dump(self.users, f, indent=2)
+            json.dump(self.users, f, indent=2, default=str)
     
     def hash_password(self, password):
-        """Hash password using SHA-256 with salt"""
+        """Hash password with salt"""
         salt = secrets.token_hex(16)
         hash_obj = hashlib.sha256((password + salt).encode())
         return f"{salt}:{hash_obj.hexdigest()}"
     
-    def verify_password(self, password, stored_hash):
-        """Verify password against stored hash"""
+    def verify_password(self, password, hashed_password):
+        """Verify password against hash"""
         try:
-            salt, hash_value = stored_hash.split(':')
+            salt, hash_value = hashed_password.split(':')
             hash_obj = hashlib.sha256((password + salt).encode())
             return hash_obj.hexdigest() == hash_value
         except:
             return False
     
-    def register_user(self, email, password, user_data=None):
+    def register_user(self, email, password):
         """Register a new user"""
         email = email.lower().strip()
         
@@ -50,19 +63,20 @@ class UserAuthentication:
         if len(password) < 6:
             return False, "Password must be at least 6 characters"
         
-        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
-            return False, "Invalid email format"
-        
-        user_id = f"USER_{secrets.token_hex(4).upper()}"
-        
+        user_id = str(uuid.uuid4())
         self.users[email] = {
             'user_id': user_id,
             'email': email,
-            'password_hash': self.hash_password(password),
+            'password': self.hash_password(password),
             'created_at': datetime.now().isoformat(),
             'last_login': None,
-            'user_data': user_data or {},
-            'preferences': {},
+            'preferences': {
+                'skin_type': '',
+                'skin_concerns': [],
+                'age': None,
+                'gender': '',
+                'monthly_budget': 50
+            },
             'history': []
         }
         
@@ -70,17 +84,18 @@ class UserAuthentication:
         return True, user_id
     
     def login_user(self, email, password):
-        """Login existing user"""
+        """Login user"""
         email = email.lower().strip()
         
         if email not in self.users:
             return False, "Email not found"
         
-        if not self.verify_password(password, self.users[email]['password_hash']):
+        if not self.verify_password(password, self.users[email]['password']):
             return False, "Invalid password"
         
         # Update last login
         self.users[email]['last_login'] = datetime.now().isoformat()
+        self.add_to_history(email, 'login', {'ip': '127.0.0.1'})
         self.save_users()
         
         return True, self.users[email]['user_id']
@@ -88,70 +103,63 @@ class UserAuthentication:
     def get_user_data(self, email):
         """Get user data by email"""
         email = email.lower().strip()
-        return self.users.get(email, None)
+        return self.users.get(email)
     
     def update_user_preferences(self, email, preferences):
         """Update user preferences"""
         email = email.lower().strip()
-        if email in self.users:
-            self.users[email]['preferences'].update(preferences)
-            self.save_users()
-            return True
-        return False
+        
+        if email not in self.users:
+            return False
+        
+        # Merge preferences
+        self.users[email]['preferences'].update(preferences)
+        self.add_to_history(email, 'preferences_updated', {'preferences': preferences})
+        self.save_users()
+        return True
     
-    def add_to_history(self, email, action, data):
+    def add_to_history(self, email, action, metadata=None):
         """Add action to user history"""
         email = email.lower().strip()
-        if email in self.users:
-            self.users[email]['history'].append({
-                'timestamp': datetime.now().isoformat(),
-                'action': action,
-                'data': data
-            })
-            # Keep only last 100 actions
-            self.users[email]['history'] = self.users[email]['history'][-100:]
-            self.save_users()
-            return True
-        return False
+        
+        if email not in self.users:
+            return False
+        
+        if metadata is None:
+            metadata = {}
+        
+        self.users[email]['history'].append({
+            'action': action,
+            'timestamp': datetime.now().isoformat(),
+            'metadata': metadata
+        })
+        
+        self.save_users()
+        return True
     
     def get_user_stats(self, email):
         """Get user statistics"""
         email = email.lower().strip()
+        
         if email not in self.users:
-            return {}
+            return None
         
         user = self.users[email]
         return {
+            'user_id': user['user_id'],
             'member_since': user['created_at'],
             'last_login': user['last_login'],
             'total_actions': len(user['history']),
-            'preferences_set': len(user['preferences']) > 0,
-            'user_id': user['user_id']
+            'preferences': user['preferences']
         }
     
     def delete_user(self, email):
         """Delete user account"""
         email = email.lower().strip()
-        if email in self.users:
-            del self.users[email]
-            self.save_users()
-            return True
-        return False
-    
-    def get_all_users(self):
-        """Get all users (admin function)"""
-        return {email: {'user_id': data['user_id'], 
-                       'created_at': data['created_at'],
-                       'last_login': data['last_login']} 
-                for email, data in self.users.items()}
-
-# Decorator for login required routes
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_email' not in session:
-            if request.is_json:
-                return jsonify({'error': 'Login required'}), 401
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
-    return decorated_function
+        
+        if email not in self.users:
+            return False
+        
+        del self.users[email]
+        self.save_users()
+        return True

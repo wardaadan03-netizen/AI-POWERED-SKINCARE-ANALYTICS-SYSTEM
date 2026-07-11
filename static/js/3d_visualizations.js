@@ -62,12 +62,10 @@ function create3DSurfacePlot(zData, xLabels, yLabels, elementId) {
 
 // Create 3D Network Graph
 function create3DNetworkGraph(nodes, edges, elementId) {
-    // Extract node positions
     const x = nodes.map(n => n.x);
     const y = nodes.map(n => n.y);
     const z = nodes.map(n => n.z);
     
-    // Create edge traces
     const edgeTraces = [];
     edges.forEach(edge => {
         const fromNode = nodes[edge.from];
@@ -84,7 +82,6 @@ function create3DNetworkGraph(nodes, edges, elementId) {
         });
     });
     
-    // Create node trace
     const nodeTrace = {
         x: x,
         y: y,
@@ -167,7 +164,6 @@ function createHeatmap(data, elementId) {
 
 // Sample data generator for demonstration
 function generateSampleData() {
-    // Sample nodes for network graph
     const ingredients = ['Retinol', 'Vitamin C', 'Niacinamide', 'HA', 'Salicylic Acid', 'Ceramides'];
     const nodes = ingredients.map((name, i) => ({
         name: name,
@@ -183,17 +179,14 @@ function generateSampleData() {
         edges.push({ from: i, to: i + 1 });
     }
     
-    // Sample surface data
     const surfaceZ = Array(10).fill().map(() => Array(10).fill().map(() => Math.random() * 100));
     const surfaceX = Array(10).fill().map((_, i) => `$${i * 50}-${(i + 1) * 50}`);
     const surfaceY = Array(10).fill().map((_, i) => `${20 + i * 5}-${25 + i * 5}`);
     
-    // Sample bar chart data
     const skinTypes = ['Oily', 'Dry', 'Combination', 'Normal', 'Sensitive'];
     const ageGroups = ['18-25', '26-35', '36-45', '46-55', '55+'];
     const barZ = skinTypes.map(() => ageGroups.map(() => Math.random() * 100));
     
-    // Sample heatmap data
     const heatmapValues = [
         [45, 65, 78, 65, 45, 30],
         [55, 75, 85, 75, 55, 45],
@@ -210,7 +203,6 @@ function generateSampleData() {
     };
 }
 
-// Export functions for use in dashboard
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         create3DScatterPlot,

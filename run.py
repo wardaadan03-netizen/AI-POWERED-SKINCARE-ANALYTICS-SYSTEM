@@ -1,4 +1,3 @@
-
 """
 Application Runner
 Run this file to start the complete application
@@ -42,10 +41,13 @@ def check_data_files():
         os.makedirs('data/processed', exist_ok=True)
         os.makedirs('data/models', exist_ok=True)
         
-        # Run data generation notebook as script
-        if os.path.exists('notebooks/01_data_generation.ipynb'):
-            print("Please run the data generation notebook first:")
-            print("  jupyter notebook notebooks/01_data_generation.ipynb")
+        # Run data generation
+        if os.path.exists('skincare_dataset.py'):
+            print("Running skincare_dataset.py to generate data...")
+            subprocess.check_call([sys.executable, "skincare_dataset.py"])
+            return True
+        else:
+            print("⚠️  skincare_dataset.py not found!")
             return False
     
     print(f"Data files found at {data_path}")
@@ -73,7 +75,7 @@ def create_directories():
 def run_app():
     """Start the Flask application"""
     print("\n" + "="*80)
-    print("STARTING SKINCARE ANALYTICS PLATFORM")
+    print("🚀 STARTING SKINCARE ANALYTICS PLATFORM")
     print("="*80)
     
     # Open browser after a short delay
@@ -96,7 +98,7 @@ def run_app():
 def main():
     """Main execution function"""
     print("="*80)
-    print("SKINCARE ANALYTICS PLATFORM SETUP")
+    print("✨ SKINCARE ANALYTICS PLATFORM SETUP")
     print("="*80)
     
     # Create directories
@@ -107,16 +109,14 @@ def main():
     
     # Check data files
     if not check_data_files():
-        print("\nPlease generate the dataset first using the notebook.")
-        print("\nSteps to get started:")
-        print("1. Run: jupyter notebook notebooks/01_EDA.ipynb")
-        print("2. Run: jupyter notebook notebooks/02_data_preprocessing.ipynb")
-        print("3. Run: jupyter notebook notebooks/05_model_training.ipynb")
-        print("4. Then run: python run.py")
+        print("\n⚠️  Dataset generation failed!")
+        print("\nYou can manually generate the dataset by running:")
+        print("  python skincare_dataset.py")
+        print("\nThen run this script again.")
         sys.exit(1)
     
     # Run application
-    run_application()
+    run_app()  # <-- This was the fix (was run_application)
 
 if __name__ == '__main__':
     main()

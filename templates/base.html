@@ -6,6 +6,11 @@
     <meta name="description" content="Inzaghi's Bliss - AI-Powered Skincare Intelligence Platform">
     <title>{% block title %}Inzaghi's Bliss{% endblock %}</title>
     
+    <!-- Pass user email to JavaScript via meta tag -->
+    {% if session.get('user_email') %}
+    <meta name="user-email" content="{{ session.get('user_email') }}">
+    {% endif %}
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -26,7 +31,6 @@
             min-height: 100vh;
         }
         
-        /* Animated Background */
         .bg-glow {
             position: fixed;
             top: 0;
@@ -39,7 +43,6 @@
             z-index: -1;
         }
         
-        /* Navigation */
         .navbar {
             position: sticky;
             top: 0;
@@ -105,6 +108,9 @@
             font-weight: 500;
             font-size: 0.9rem;
             transition: all 0.3s ease;
+            cursor: pointer;
+            background: none;
+            border: none;
         }
         
         .nav-link:hover {
@@ -145,7 +151,6 @@
             transition: 0.3s;
         }
         
-        /* Buttons */
         .btn-primary {
             display: inline-flex;
             align-items: center;
@@ -189,12 +194,10 @@
             transform: translateY(-2px);
         }
         
-        /* Main Content */
         .main-content {
             min-height: calc(100vh - 200px);
         }
         
-        /* Footer */
         .footer {
             background: rgba(15,7,25,0.95);
             backdrop-filter: blur(20px);
@@ -250,6 +253,7 @@
             text-decoration: none;
             font-size: 0.85rem;
             transition: color 0.3s;
+            cursor: pointer;
         }
         
         .footer-section ul li a:hover {
@@ -287,7 +291,6 @@
             font-size: 0.8rem;
         }
         
-        /* Toast Notification */
         .toast-notification {
             position: fixed;
             bottom: 2rem;
@@ -306,7 +309,215 @@
             to { opacity: 1; transform: translateX(0); }
         }
         
-        /* Responsive */
+        /* ============================================
+           DISCLAIMER POPUP MODAL
+        ============================================ */
+        .disclaimer-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInModal 0.4s ease;
+        }
+        
+        .disclaimer-modal.show {
+            display: flex;
+        }
+        
+        @keyframes fadeInModal {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .disclaimer-modal-content {
+            background: linear-gradient(135deg, #0F0719 0%, #1A0F2E 100%);
+            border: 1px solid rgba(108, 99, 255, 0.3);
+            border-radius: 28px;
+            padding: 2rem;
+            max-width: 650px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+        }
+        
+        .disclaimer-modal-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .disclaimer-modal-content::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+        
+        .disclaimer-modal-content::-webkit-scrollbar-thumb {
+            background: #6C63FF;
+            border-radius: 10px;
+        }
+        
+        .disclaimer-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        
+        .disclaimer-modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FFFFFF, #6C63FF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+        }
+        
+        .disclaimer-modal-close {
+            font-size: 2rem;
+            font-weight: 300;
+            cursor: pointer;
+            color: rgba(255,255,255,0.5);
+            transition: all 0.3s;
+            padding: 0.2rem 0.5rem;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+        
+        .disclaimer-modal-close:hover {
+            color: #FF6584;
+            transform: rotate(90deg);
+        }
+        
+        .disclaimer-modal-body {
+            margin: 0.5rem 0;
+        }
+        
+        .disclaimer-section-modal {
+            margin-bottom: 0.8rem;
+            padding: 0.8rem 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border-left: 3px solid rgba(108, 99, 255, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .disclaimer-section-modal:hover {
+            background: rgba(255,255,255,0.06);
+            border-left-color: #6C63FF;
+        }
+        
+        .disclaimer-section-modal h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .disclaimer-section-modal h4 .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, #6C63FF, #FF6584);
+            border-radius: 50%;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .disclaimer-section-modal p {
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        
+        .disclaimer-section-modal p strong {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .disclaimer-modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary-modal {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 2rem;
+            background: linear-gradient(135deg, #6C63FF, #FF6584);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-modal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108,99,255,0.4);
+        }
+        
+        .btn-secondary-modal {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 2rem;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50px;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary-modal:hover {
+            border-color: #6C63FF;
+            color: white;
+            background: rgba(108,99,255,0.1);
+        }
+        
+        .disclaimer-modal-date {
+            text-align: center;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 640px) {
+            .disclaimer-modal-content { padding: 1.5rem; }
+            .disclaimer-modal-header h2 { font-size: 1.2rem; }
+            .disclaimer-section-modal { padding: 0.6rem 0.8rem; }
+            .disclaimer-modal-footer { flex-direction: column; align-items: center; }
+            .btn-primary-modal, .btn-secondary-modal { width: 100%; justify-content: center; }
+        }
+        
         @media (max-width: 768px) {
             .mobile-menu {
                 display: block;
@@ -351,6 +562,56 @@
 <body>
     <div class="bg-glow"></div>
     
+    <!-- ============================================
+    DISCLAIMER POPUP MODAL - UPDATED WITH YOUR TEXT
+    ============================================ -->
+    <div class="disclaimer-modal" id="disclaimerModal">
+        <div class="disclaimer-modal-content">
+            <div class="disclaimer-modal-header">
+                <h2><span style="color: #FF6584;">💖</span>Hi Lovelies! 💖</h2>
+                <button class="disclaimer-modal-close" onclick="closeDisclaimer()">&times;</button>
+            </div>
+            <div class="disclaimer-modal-body">
+                <div class="disclaimer-section-modal">
+                    <h4><span class="num">1</span> Recommendation System</h4>
+                    <p><strong>This website is only a recommendation system.</strong> The recommendations provided are based solely on the information you enter and are intended for informational purposes only.</p>
+                </div>
+                
+                <div class="disclaimer-section-modal">
+                    <h4><span class="num">2</span> No Guarantees</h4>
+                    <p>We <strong>do not guarantee</strong> that the recommended products will be suitable for every individual. If you experience any irritation, allergic reaction, or other side effects, the website and its owners <strong>are not responsible</strong> for such outcomes.</p>
+                </div>
+                
+                <div class="disclaimer-section-modal">
+                    <h4><span class="num">3</span> Patch Test Required</h4>
+                    <p>Before using any recommended product, <strong>always perform a patch test</strong> and carefully review the product's ingredients and usage instructions.</p>
+                </div>
+                
+                <div class="disclaimer-section-modal">
+                    <h4><span class="num">4</span> Consult a Dermatologist</h4>
+                    <p>If you have sensitive skin or any skin condition, <strong>consider consulting a qualified dermatologist</strong> before using new skincare products.</p>
+                </div>
+                
+                <div style="background: rgba(108,99,255,0.08); border: 1px solid rgba(108,99,255,0.2); border-radius: 12px; padding: 0.8rem 1rem; margin-top: 0.5rem; text-align: center;">
+                    <p style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin: 0;">
+                        <strong>By using this website, you acknowledge and accept this disclaimer.</strong>
+                    </p>
+                </div>
+            </div>
+            <div class="disclaimer-modal-footer">
+                <button onclick="acceptDisclaimer()" class="btn-primary-modal">
+                    <i class="fas fa-check"></i> I Understand
+                </button>
+                <button onclick="closeDisclaimer()" class="btn-secondary-modal">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+            <div class="disclaimer-modal-date">
+                Last Updated: July 2024
+            </div>
+        </div>
+    </div>
+    
     <nav class="navbar">
         <div class="nav-container">
             <a href="{{ url_for('index') }}" class="logo">
@@ -369,6 +630,12 @@
                     </a>
                     <a href="{{ url_for('recommendations_page') }}" class="nav-link">
                         <i class="fas fa-gem"></i> Recommendations
+                    </a>
+                    <a href="{{ url_for('ingredients_page') }}" class="nav-link">
+                        <i class="fas fa-flask"></i> Ingredients
+                    </a>
+                    <a href="{{ url_for('qr_code') }}" class="nav-link">
+                        <i class="fas fa-qrcode"></i> QR Code
                     </a>
                     <a href="{{ url_for('profile_page') }}" class="nav-link">
                         <i class="fas fa-user"></i> Profile
@@ -411,15 +678,14 @@
                 <ul>
                     <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
                     <li><a href="{{ url_for('recommendations_page') }}">Recommendations</a></li>
-                    <li><a href="#">Skin Analysis</a></li>
+                    <li><a href="{{ url_for('ingredients_page') }}">Ingredients</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Resources</h4>
                 <ul>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Ingredient Guide</a></li>
                     <li><a href="#">FAQ</a></li>
+                    <li><a href="{{ url_for('qr_code') }}">QR Code</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -436,37 +702,10 @@
         </div>
     </footer>
     
-    <script>
-        // Mobile menu toggle
-        const menuBtn = document.getElementById('mobileMenuBtn');
-        const navLinks = document.getElementById('navLinks');
-        
-        if (menuBtn) {
-            menuBtn.addEventListener('click', function() {
-                this.classList.toggle('active');
-                navLinks.classList.toggle('active');
-                document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
-            });
-        }
-        
-        // Close menu on link click
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks?.classList.remove('active');
-                menuBtn?.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-        });
-        
-        // Toast notification function
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = 'toast-notification';
-            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}" style="margin-right: 8px;"></i> ${message}`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-    </script>
+    <!-- ============================================
+    ALL JAVASCRIPT MOVED TO EXTERNAL FILE
+    ============================================ -->
+    <script src="{{ url_for('static', filename='js/base.js') }}"></script>
     
     {% block extra_js %}{% endblock %}
 </body>

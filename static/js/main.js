@@ -5,14 +5,8 @@
 // Smooth scroll reveal
 document.addEventListener('DOMContentLoaded', function() {
     AOS.refresh();
-    
-    // Add hover sound effect (optional)
     addHoverEffects();
-    
-    // Initialize tooltips
     initTooltips();
-    
-    // Add parallax effect to background
     initParallax();
 });
 

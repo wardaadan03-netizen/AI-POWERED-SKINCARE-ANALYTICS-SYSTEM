@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}Disclaimer — Inzaghi's Bliss{% endblock %}
+
+{% block extra_css %}
+<style>
+    .disclaimer-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+    }
+    
+    .disclaimer-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 28px;
+        padding: 2.5rem;
+        width: 100%;
+        animation: fadeInUp 0.6s ease;
+    }
+    
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .disclaimer-card h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .disclaimer-card h1 .warning-icon {
+        color: #FF6584;
+    }
+    
+    .disclaimer-card .subtitle {
+        text-align: center;
+        color: rgba(255,255,255,0.5);
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+    }
+    
+    .disclaimer-card hr {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(108,99,255,0.3), transparent);
+        margin: 1.5rem 0;
+    }
+    
+    .disclaimer-section {
+        margin-bottom: 1.5rem;
+        padding: 1rem 1.2rem;
+        background: rgba(255,255,255,0.02);
+        border-radius: 14px;
+        border-left: 3px solid rgba(108,99,255,0.3);
+        transition: all 0.3s;
+    }
+    
+    .disclaimer-section:hover {
+        background: rgba(255,255,255,0.04);
+        border-left-color: #6C63FF;
+    }
+    
+    .disclaimer-section h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .disclaimer-section h4 .num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        background: linear-gradient(135deg, #6C63FF, #FF6584);
+        border-radius: 50%;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: white;
+        flex-shrink: 0;
+    }
+    
+    .disclaimer-section p {
+        color: rgba(255,255,255,0.75);
+        line-height: 1.8;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+    
+    .disclaimer-section p strong {
+        color: rgba(255,255,255,0.95);
+    }
+    
+    .disclaimer-section .highlight {
+        color: #FF6584;
+        font-weight: 600;
+    }
+    
+    .disclaimer-section .important {
+        color: #FFB347;
+        font-weight: 600;
+    }
+    
+    .disclaimer-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .disclaimer-footer .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.8rem 2rem;
+        background: linear-gradient(135deg, #6C63FF, #FF6584);
+        border: none;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .disclaimer-footer .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108,99,255,0.4);
+    }
+    
+    .disclaimer-footer .disclaimer-date {
+        color: rgba(255,255,255,0.3);
+        font-size: 0.8rem;
+        margin-top: 1rem;
+    }
+    
+    .acknowledge-box {
+        background: rgba(108,99,255,0.08);
+        border: 1px solid rgba(108,99,255,0.2);
+        border-radius: 16px;
+        padding: 1rem 1.5rem;
+        margin-top: 1.5rem;
+        text-align: center;
+    }
+    
+    .acknowledge-box p {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+    
+    .acknowledge-box strong {
+        color: #6C63FF;
+    }
+    
+    @media (max-width: 640px) {
+        .disclaimer-card { padding: 1.5rem; }
+        .disclaimer-card h1 { font-size: 1.5rem; }
+        .disclaimer-section { padding: 0.8rem 1rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="disclaimer-container">
+    <div class="disclaimer-card">
+        <h1>
+            <span class="warning-icon">⚠️</span> Medical Disclaimer
+        </h1>
+        <p class="subtitle">Please read this carefully before using our services</p>
+        
+        <hr>
+        
+        <div class="disclaimer-section">
+            <h4><span class="num">1</span> Recommendation System</h4>
+            <p>
+                <strong>This website is only a recommendation system.</strong> 
+                The recommendations provided are based solely on the information you enter and are 
+                <strong>intended for informational purposes only</strong>.
+            </p>
+        </div>
+        
+        <div class="disclaimer-section">
+            <h4><span class="num">2</span> No Guarantees</h4>
+            <p>
+                We <span class="highlight">do not guarantee</span> that the recommended products will be suitable for every individual. 
+                If you experience any irritation, allergic reaction, or other side effects, 
+                the website and its owners <span class="highlight">are not responsible</span> for such outcomes.
+            </p>
+        </div>
+        
+        <div class="disclaimer-section">
+            <h4><span class="num">3</span> Patch Test Required</h4>
+            <p>
+                Before using any recommended product, <span class="important">always perform a patch test</span> and 
+                carefully review the product's ingredients and usage instructions.
+            </p>
+        </div>
+        
+        <div class="disclaimer-section">
+            <h4><span class="num">4</span> Consult a Dermatologist</h4>
+            <p>
+                If you have sensitive skin or any skin condition, <strong>consider consulting a qualified dermatologist</strong> 
+                before using new skincare products.
+            </p>
+        </div>
+        
+        <div class="acknowledge-box">
+            <p>
+                <strong>By using this website, you acknowledge and accept this disclaimer.</strong>
+            </p>
+        </div>
+        
+        <hr>
+        
+        <div class="disclaimer-footer">
+            <a href="{{ url_for('dashboard') }}" class="btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <div class="disclaimer-date">
+                Last Updated: July 2024
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
