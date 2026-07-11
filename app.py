@@ -74,10 +74,19 @@ def register():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
+        
+        # Check if user already exists
+        if auth.get_user(email):
+            return jsonify({'success': False, 'error': 'Email already registered'}), 400
+        
         success, result = auth.register_user(email, password)
         if success:
+            # Clear any old session data before setting new
+            session.clear()
             session['user_email'] = email
             session['user_id'] = result
+            session.permanent = True
+            
             return jsonify({'success': True, 'redirect': '/profile-setup'})
         return jsonify({'success': False, 'error': result}), 400
     return render_template('register.html')

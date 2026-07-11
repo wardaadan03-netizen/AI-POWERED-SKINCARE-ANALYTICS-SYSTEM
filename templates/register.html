@@ -338,6 +338,31 @@
         flex: 1;
     }
     
+    /* Toast Notification */
+    .toast-fixed {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 9999;
+        padding: 1rem 1.5rem;
+        border-radius: 16px;
+        background: rgba(15,7,25,0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(108,99,255,0.3);
+        color: white;
+        font-weight: 500;
+        animation: slideUp 0.4s ease;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    
+    .toast-fixed.success { border-color: #00D68F; }
+    .toast-fixed.error { border-color: #FF3B5C; }
+    
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
     /* Spinner */
     .spinner-btn {
         display: inline-block;
@@ -470,14 +495,29 @@
 </div>
 
 <script>
+function showToast(message, type) {
+    // Remove existing toast
+    $('.toast-fixed').remove();
+    
+    var toast = $('<div class="toast-fixed">' + message + '</div>');
+    toast.addClass(type || 'success');
+    $('body').append(toast);
+    
+    setTimeout(function() {
+        toast.fadeOut(300, function() {
+            toast.remove();
+        });
+    }, 3000);
+}
+
 $(document).ready(function() {
     let isSubmitting = false;
     
     // Toggle password visibility
     $('.toggle-password').click(function() {
-        const target = $(this).data('target');
-        const input = $('#' + target);
-        const icon = $(this).find('i');
+        var target = $(this).data('target');
+        var input = $('#' + target);
+        var icon = $(this).find('i');
         
         if (input.attr('type') === 'password') {
             input.attr('type', 'text');
@@ -490,8 +530,8 @@ $(document).ready(function() {
     
     // Email validation
     $('#email').on('input', function() {
-        const email = $(this).val();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var email = $(this).val();
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         
         if (email && !emailRegex.test(email)) {
             $(this).addClass('error');
@@ -502,7 +542,7 @@ $(document).ready(function() {
     
     // Password strength checker
     $('#password').on('input', function() {
-        const password = $(this).val();
+        var password = $(this).val();
         $('#passwordStrength').show();
         
         if (password.length === 0) {
@@ -510,8 +550,8 @@ $(document).ready(function() {
             return;
         }
         
-        let strength = 0;
-        const checks = {
+        var strength = 0;
+        var checks = {
             length: password.length >= 6,
             upperLower: /[a-z]/.test(password) && /[A-Z]/.test(password),
             number: /\d/.test(password)
@@ -534,8 +574,8 @@ $(document).ready(function() {
         if (password.length >= 8) strength++;
         
         // Update strength bars
-        for (let i = 1; i <= 4; i++) {
-            const bar = $('#bar' + i);
+        for (var i = 1; i <= 4; i++) {
+            var bar = $('#bar' + i);
             if (i <= strength) {
                 if (strength <= 2) bar.addClass('weak').removeClass('fair good strong');
                 else if (strength === 3) bar.addClass('fair').removeClass('weak good strong');
@@ -546,7 +586,7 @@ $(document).ready(function() {
         }
         
         // Update strength text
-        let strengthText = '';
+        var strengthText = '';
         if (strength <= 1) strengthText = 'Weak password';
         else if (strength <= 2) strengthText = 'Fair password';
         else if (strength <= 3) strengthText = 'Good password';
@@ -564,9 +604,9 @@ $(document).ready(function() {
     });
     
     function checkPasswordMatch() {
-        const password = $('#password').val();
-        const confirm = $('#confirmPassword').val();
-        const matchIndicator = $('#matchIndicator');
+        var password = $('#password').val();
+        var confirm = $('#confirmPassword').val();
+        var matchIndicator = $('#matchIndicator');
         
         if (confirm.length === 0) {
             matchIndicator.hide();
@@ -584,18 +624,18 @@ $(document).ready(function() {
         }
     }
     
-    // Form submission
+    // Form submission - FIXED with session flag
     $('#registerForm').on('submit', function(e) {
         e.preventDefault();
         
         if (isSubmitting) return;
         
-        const email = $('#email').val();
-        const password = $('#password').val();
-        const confirm = $('#confirmPassword').val();
-        const termsChecked = $('#termsCheckbox').is(':checked');
+        var email = $('#email').val();
+        var password = $('#password').val();
+        var confirm = $('#confirmPassword').val();
+        var termsChecked = $('#termsCheckbox').is(':checked');
         
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email || !emailRegex.test(email)) {
             showToast('Please enter a valid email address', 'error');
             $('#email').focus();
@@ -620,8 +660,8 @@ $(document).ready(function() {
         }
         
         isSubmitting = true;
-        const btn = $('#registerBtn');
-        const originalText = btn.html();
+        var btn = $('#registerBtn');
+        var originalText = btn.html();
         btn.html('<span class="spinner-btn"></span> Creating account...').prop('disabled', true);
         
         $.ajax({
@@ -630,9 +670,16 @@ $(document).ready(function() {
             data: { email: email, password: password },
             success: function(data) {
                 if (data.success) {
+                    // Set session flag for disclaimer
+                    sessionStorage.setItem('justRegistered', 'true');
+                    sessionStorage.removeItem('disclaimerAccepted');
+                    
                     btn.html('<i class="fas fa-check"></i> Account Created!');
                     showToast('Welcome to Inzaghi\'s Bliss! Redirecting...', 'success');
-                    setTimeout(() => { window.location.href = data.redirect; }, 1500);
+                    
+                    setTimeout(function() {
+                        window.location.href = data.redirect || '/profile-setup';
+                    }, 1500);
                 } else {
                     showToast(data.error || 'Registration failed', 'error');
                     btn.html(originalText).prop('disabled', false);
@@ -640,7 +687,7 @@ $(document).ready(function() {
                 }
             },
             error: function(xhr) {
-                const response = xhr.responseJSON;
+                var response = xhr.responseJSON;
                 showToast(response?.error || 'Registration failed. Please try again.', 'error');
                 btn.html(originalText).prop('disabled', false);
                 isSubmitting = false;
