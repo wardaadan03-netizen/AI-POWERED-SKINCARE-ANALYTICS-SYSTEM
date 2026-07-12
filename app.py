@@ -18,6 +18,7 @@ app = Flask(__name__)
 # ============================================
 
 app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
+print(f"🔑 Using SECRET_KEY from env: {bool(os.environ.get('SECRET_KEY'))}")
 DEBUG = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
 
 UPLOAD_FOLDER = 'uploads'
@@ -75,22 +76,37 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
         
+        # Debug - print to console
+        print(f"📝 Registration attempt: {email}")
+        
+        # Validate
+        if not email or not password:
+            return jsonify({'success': False, 'error': 'Email and password are required'}), 400
+        
+        if len(password) < 6:
+            return jsonify({'success': False, 'error': 'Password must be at least 6 characters'}), 400
+        
         # Check if user already exists
         if auth.get_user(email):
             return jsonify({'success': False, 'error': 'Email already registered'}), 400
         
+        # Register user
         success, result = auth.register_user(email, password)
+        
         if success:
-            # Clear any old session data before setting new
+            # Set session
             session.clear()
             session['user_email'] = email
             session['user_id'] = result
             session.permanent = True
             
+            print(f"✅ User registered: {email}")
             return jsonify({'success': True, 'redirect': '/profile-setup'})
-        return jsonify({'success': False, 'error': result}), 400
+        else:
+            print(f"❌ Registration failed: {result}")
+            return jsonify({'success': False, 'error': result}), 400
+    
     return render_template('register.html')
-
 @app.route('/profile-setup', methods=['GET', 'POST'])
 @login_required
 def profile_setup():
