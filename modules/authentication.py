@@ -146,9 +146,19 @@ class UserAuthentication:
         return True
 
     def add_to_history(self, email, action, metadata=None):
-        """Add action to user history"""
+        """Add action to user history
+
+        NOTE: deliberately does NOT call self._reload(). This method is only
+        ever called from within another method of this class (login_user,
+        update_user_preferences, delete_user, etc.) that has already reloaded
+        fresh data from disk and made its own in-memory change to
+        self.users (e.g. setting last_login or merging preferences).
+        Reloading again here would overwrite that pending in-memory change
+        with the stale on-disk version before save_users() ever runs -
+        which was the root cause of last_login and preferences never
+        persisting.
+        """
         email = email.lower().strip()
-        self._reload()
 
         if email not in self.users:
             return False
