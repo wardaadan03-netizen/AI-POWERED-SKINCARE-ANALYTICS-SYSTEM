@@ -12,16 +12,16 @@ import uuid
 
 class UserAuthentication:
     """Handles user authentication with JSON storage"""
-    
+
     def __init__(self, user_db_path='data/users.json'):
         self.user_db_path = user_db_path
         self.users = {}
         self.load_users()
-    
+
     def load_users(self):
         """Load users from JSON file"""
         os.makedirs(os.path.dirname(self.user_db_path), exist_ok=True)
-        
+
         if os.path.exists(self.user_db_path):
             try:
                 with open(self.user_db_path, 'r') as f:
@@ -31,38 +31,41 @@ class UserAuthentication:
         else:
             self.users = {}
             self.save_users()
-    
+
     def save_users(self):
         """Save users to JSON file"""
         os.makedirs(os.path.dirname(self.user_db_path), exist_ok=True)
         with open(self.user_db_path, 'w') as f:
             json.dump(self.users, f, indent=2, default=str)
-    
+
     def hash_password(self, password):
         """Hash password with salt"""
         salt = secrets.token_hex(16)
         hash_obj = hashlib.sha256((password + salt).encode())
         return f"{salt}:{hash_obj.hexdigest()}"
-    
+
     def verify_password(self, password, hashed_password):
         """Verify password against hash"""
         try:
             salt, hash_value = hashed_password.split(':')
             hash_obj = hashlib.sha256((password + salt).encode())
             return hash_obj.hexdigest() == hash_value
-        except:
+        except (ValueError, AttributeError):
             return False
-    
+
     def register_user(self, email, password):
         """Register a new user"""
         email = email.lower().strip()
-        
+
+        # Debug
+        print(f"🔐 Registering user: {email}")
+
         if email in self.users:
             return False, "Email already registered"
-        
+
         if len(password) < 6:
             return False, "Password must be at least 6 characters"
-        
+
         user_id = str(uuid.uuid4())
         self.users[email] = {
             'user_id': user_id,
@@ -79,71 +82,77 @@ class UserAuthentication:
             },
             'history': []
         }
-        
+
         self.save_users()
+        print(f"✅ User saved: {email}")
         return True, user_id
-    
+
     def login_user(self, email, password):
         """Login user"""
         email = email.lower().strip()
-        
+
         if email not in self.users:
             return False, "Email not found"
-        
+
         if not self.verify_password(password, self.users[email]['password']):
             return False, "Invalid password"
-        
+
         # Update last login
         self.users[email]['last_login'] = datetime.now().isoformat()
         self.add_to_history(email, 'login', {'ip': '127.0.0.1'})
         self.save_users()
-        
+
         return True, self.users[email]['user_id']
-    
+
+    def get_user(self, email):
+        """Check if a user exists by email (used by app.py registration check)"""
+        email = email.lower().strip()
+        return self.users.get(email)
+
     def get_user_data(self, email):
         """Get user data by email"""
         email = email.lower().strip()
         return self.users.get(email)
-    
+
     def update_user_preferences(self, email, preferences):
         """Update user preferences"""
         email = email.lower().strip()
-        
+
         if email not in self.users:
             return False
-        
+
         # Merge preferences
         self.users[email]['preferences'].update(preferences)
         self.add_to_history(email, 'preferences_updated', {'preferences': preferences})
         self.save_users()
         return True
-    
+
     def add_to_history(self, email, action, metadata=None):
         """Add action to user history"""
         email = email.lower().strip()
-        
+
         if email not in self.users:
             return False
-        
+
         if metadata is None:
             metadata = {}
-        
+
         self.users[email]['history'].append({
             'action': action,
             'timestamp': datetime.now().isoformat(),
             'metadata': metadata
         })
-        
+
         self.save_users()
         return True
-    
+
     def get_user_stats(self, email):
         """Get user statistics"""
         email = email.lower().strip()
-        
+
         if email not in self.users:
             return None
-        
+
         user = self.users[email]
         return {
             'user_id': user['user_id'],
@@ -152,14 +161,14 @@ class UserAuthentication:
             'total_actions': len(user['history']),
             'preferences': user['preferences']
         }
-    
+
     def delete_user(self, email):
         """Delete user account"""
         email = email.lower().strip()
-        
+
         if email not in self.users:
             return False
-        
+
         del self.users[email]
         self.save_users()
         return True
