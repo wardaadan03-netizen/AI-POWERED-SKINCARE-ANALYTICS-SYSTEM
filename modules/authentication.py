@@ -38,6 +38,19 @@ class UserAuthentication:
         with open(self.user_db_path, 'w') as f:
             json.dump(self.users, f, indent=2, default=str)
 
+    def _reload(self):
+        """Reload users from disk so all gunicorn workers stay in sync.
+        Each worker process has its own in-memory copy of self.users, but
+        they all share the same JSON file on disk. Without this reload,
+        a user created on one worker is invisible to the others until
+        that worker happens to restart."""
+        if os.path.exists(self.user_db_path):
+            try:
+                with open(self.user_db_path, 'r') as f:
+                    self.users = json.load(f)
+            except (json.JSONDecodeError, FileNotFoundError):
+                pass
+
     def hash_password(self, password):
         """Hash password with salt"""
         salt = secrets.token_hex(16)
@@ -56,6 +69,7 @@ class UserAuthentication:
     def register_user(self, email, password):
         """Register a new user"""
         email = email.lower().strip()
+        self._reload()
 
         # Debug
         print(f"🔐 Registering user: {email}")
@@ -90,6 +104,7 @@ class UserAuthentication:
     def login_user(self, email, password):
         """Login user"""
         email = email.lower().strip()
+        self._reload()
 
         if email not in self.users:
             return False, "Email not found"
@@ -107,16 +122,19 @@ class UserAuthentication:
     def get_user(self, email):
         """Check if a user exists by email (used by app.py registration check)"""
         email = email.lower().strip()
+        self._reload()
         return self.users.get(email)
 
     def get_user_data(self, email):
         """Get user data by email"""
         email = email.lower().strip()
+        self._reload()
         return self.users.get(email)
 
     def update_user_preferences(self, email, preferences):
         """Update user preferences"""
         email = email.lower().strip()
+        self._reload()
 
         if email not in self.users:
             return False
@@ -130,6 +148,7 @@ class UserAuthentication:
     def add_to_history(self, email, action, metadata=None):
         """Add action to user history"""
         email = email.lower().strip()
+        self._reload()
 
         if email not in self.users:
             return False
@@ -149,6 +168,7 @@ class UserAuthentication:
     def get_user_stats(self, email):
         """Get user statistics"""
         email = email.lower().strip()
+        self._reload()
 
         if email not in self.users:
             return None
@@ -165,6 +185,7 @@ class UserAuthentication:
     def delete_user(self, email):
         """Delete user account"""
         email = email.lower().strip()
+        self._reload()
 
         if email not in self.users:
             return False
